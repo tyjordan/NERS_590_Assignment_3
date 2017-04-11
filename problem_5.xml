@@ -1,0 +1,125 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+
+<nsamples n="100000000"/>
+<variance_reduction split_and_roulette="1"/>
+
+<distributions>
+	<uniform    name="isotropic scatter" datatype="double" a="-1.0" b="1.0"/>
+	<delta   	name="pos dist" datatype="point" x = "1.5" y = "1.5" z = "0.0" />
+	<isotropic      name="dir dist" datatype="point"/>
+</distributions>
+
+<nuclides>
+	<nuclide name="nuc1"> 
+    	<capture xs="10.0"/>
+    	<scatter xs="10.0" distribution="isotropic scatter"/>
+	</nuclide>
+	<nuclide name="nuc2">
+		<capture xs="100.0"/>
+	</nuclide>
+	<nuclide name="nuc3">
+		<capture xs="59.0"/>
+    	<scatter xs="1.0" distribution="isotropic scatter"/>
+	</nuclide>
+</nuclides>
+
+<materials>
+	<material name="matA" density="0.1">
+    	<nuclide name="nuc1" frac="1.0"/>
+	</material>
+	<material name="matB" density="0.1">
+    	<nuclide name="nuc2" frac="1.0"/>
+	</material>
+	<material name="matDet" density="0.005">
+    	<nuclide name="nuc3" frac="1.0"/>
+	</material>
+</materials>
+
+<surfaces>
+	<plane name="left face" a="1.0" b="0.0" c="0.0" d="0.0"/>
+	<plane name="right face" a="1.0" b="0.0" c="0.0" d="9.0"/>
+	<cylinder name="cylindrical detector wall" axis="z" x0="6.5" y0="1.5" z0="0.0" rad="0.5"/>
+	<plane name="absorber left" a="1.0" b="0.0" c="0.0" d="4.0"/>
+	<plane name="absorber right" a="1.0" b="0.0" c="0.0" d="5.0"/>
+	<plane name="absorber top" a="0.0" b="1.0" c="0.0" d="3.0"/>
+	<plane name="top face" a="0.0" b="1.0" c="0.0" d="6.0"/>
+	<plane name="bottom face" a="0.0" b="1.0" c="0.0" d="0.0"/>
+</surfaces>
+
+<cells>
+  <cell name="detector" material="matDet" importance="300.0">
+    <surface name="cylindrical detector wall" sense="-1"/>
+  </cell>
+  <cell name="sec 1" material="matA" importance="1.0">
+	<surface name="absorber left" sense="-1"/>
+	<surface name="left face" sense="+1"/>
+	<surface name="top face" sense="-1"/>
+	<surface name="bottom face" sense="+1"/>
+  </cell>
+  <cell name="sec 2" material="matA" importance="75.0">
+	<surface name="absorber left" sense="+1"/>
+	<surface name="absorber top" sense="+1"/>
+    <surface name="top face" sense="-1"/>
+	<surface name="right face" sense="-1"/>
+  </cell>
+  <cell name="sec 3" material="matA" importance="80.0">
+	<surface name="absorber top" sense="-1"/>
+	<surface name="absorber right" sense="+1"/>
+	<surface name="right face" sense="-1"/>
+	<surface name="bottom face" sense="+1"/>
+	<surface name="cylindrical detector wall" sense="+1"/>
+  </cell>
+  <cell name="graveyard 1" importance="0.0">
+	<surface name="top face" sense="+1"/>
+	<surface name="right face" sense="-1"/>
+	<surface name="left face" sense="+1"/>
+  </cell>
+  <cell name="graveyard 2" importance="0.0">
+	<surface name="top face" sense="+1"/>
+	<surface name="right face" sense="+1"/>
+  </cell>
+  <cell name="graveyard 3" importance="0.0">
+	<surface name="top face" sense="-1"/>
+	<surface name="bottom face" sense="+1"/>
+	<surface name="right face" sense="+1"/>
+  </cell>
+  <cell name="graveyard 4" importance="0.0">
+	<surface name="bottom face" sense="-1"/>
+	<surface name="right face" sense="+1"/>
+  </cell>
+  <cell name="graveyard 5" importance="0.0">
+	<surface name="bottom face" sense="-1"/>
+	<surface name="right face" sense="-1"/>
+	<surface name="left face" sense="+1"/>
+  </cell>
+  <cell name="graveyard 6" importance="0.0">
+	<surface name="bottom face" sense="-1"/>
+	<surface name="left face" sense="-1"/>
+  </cell>
+  <cell name="graveyard 7" importance="0.0">
+	<surface name="top face" sense="-1"/>
+	<surface name="bottom face" sense="+1"/>
+	<surface name="left face" sense="-1"/>
+  </cell>
+  <cell name="graveyard 8" importance="0.0">
+	<surface name="top face" sense="+1"/>
+	<surface name="left face" sense="-1"/>
+  </cell>
+  <cell name="absorber" material="matB" importance="0.1">
+	<surface name="absorber top" sense="-1"/>
+	<surface name="bottom face" sense="+1"/>
+	<surface name="absorber left" sense="+1"/>
+	<surface name="absorber right" sense="-1"/>
+  </cell>
+</cells>
+
+<estimators>
+	<cell_pathLengthFlux_estimator name="detector absorption rate" estimator_multiplier="0.295">
+		<cell name="detector" />
+	</cell_pathLengthFlux_estimator>
+</estimators>
+
+<source>
+  <position  distribution="pos dist"/>
+  <direction distribution="dir dist"/>
+</source>

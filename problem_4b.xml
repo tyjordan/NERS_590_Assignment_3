@@ -1,0 +1,83 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+
+<nsamples n="10000000"/>
+
+<distributions>
+	<linear		name="linear_anisotropic" datatype="double" a="-1" b="1" fa="0" fb="0.6667"/>
+	<uniform    name="isotropic scatter" datatype="double" a="-1.0" b="1.0"/>
+	<uniform_spherical	name="pos dist" datatype="point" x0="0" y0="0" z0="0" r0="1" R="2"/>
+	<isotropic      name="dir dist" datatype="point"/>
+</distributions>
+
+<nuclides>
+	<nuclide name="nuc1"> 
+    	<capture xs="1.0"/>
+    	<scatter xs="19.0" distribution="linear_anisotropic"/>
+	</nuclide>
+	<nuclide name="nuc2">
+		<capture xs="1.0"/>
+    	<scatter xs="4.0" distribution="isotropic scatter"/>
+	</nuclide>
+	<nuclide name="nuc3">
+		<capture xs="59.0"/>
+    	<scatter xs="1.0" distribution="isotropic scatter"/>
+	</nuclide>
+</nuclides>
+
+<materials>
+	<material name="mat1" density="0.1">
+    	<nuclide name="nuc1" frac="0.6667"/>
+		<nuclide name="nuc2" frac="0.3333"/>
+	</material>
+	<material name="mat2" density="0.005">
+    	<nuclide name="nuc3" frac="1.0"/>
+	</material>
+</materials>
+
+<surfaces>
+	<plane name="front detector face" a="1.0" b="0.0" c="0.0" d="14.0"/>
+	<plane name="back detector face" a="1.0" b="0.0" c="0.0" d="19.0"/>
+	<cylinder name="cylindrical detector wall" axis="x" x0="0" y0="0" z0="0" rad="0.5"/>
+	<sphere name="sphere boundary" x0="0" y0="0" z0="0" rad="4.0"/>
+	<sphere name="problem boundary" x0="0" y0="0" z0="0" rad="50.0"/>
+</surfaces>
+
+<cells>
+  <cell name="sphere" material="mat1">
+    <surface name="sphere boundary" sense="-1"/>
+  </cell>
+  <cell name="detector" material="mat2">
+	<surface name="front detector face" sense="+1"/>
+	<surface name="back detector face" sense="-1"/>
+    <surface name="cylindrical detector wall" sense="-1"/>
+  </cell>
+  <cell name="void 1">
+	<surface name="problem boundary" sense="-1"/>
+	<surface name="sphere boundary" sense="+1"/>
+	<surface name="front detector face" sense="-1"/>
+  </cell>
+  <cell name="void 2">
+	<surface name="problem boundary" sense="-1"/>
+	<surface name="front detector face" sense="+1"/>
+    <surface name="cylindrical detector wall" sense="+1"/>
+	<surface name="back detector face" sense="-1"/>
+  </cell>
+  <cell name="void 3">
+	<surface name="problem boundary" sense="-1"/>
+	<surface name="back detector face" sense="+1"/>
+  </cell>
+  <cell name="graveyard" importance="0.0">
+	<surface name="problem boundary" sense="+1"/>
+  </cell>
+</cells>
+
+<estimators>
+	<cell_pathLengthFlux_estimator name="detector absorption rate" estimator_multiplier="0.295">
+		<cell name="detector" />
+	</cell_pathLengthFlux_estimator>
+</estimators>
+
+<source>
+  <position  distribution="pos dist"/>
+  <direction distribution="dir dist"/>
+</source>
