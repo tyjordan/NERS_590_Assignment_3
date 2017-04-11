@@ -9,6 +9,7 @@
 #include "Cell.h"
 #include "Particle.h"
 
+// this is a test
 // take in a pair of surface pointer and integer describing sense (must not be zero!)
 // and append to vector of surfaces
 void cell::addSurface( std::shared_ptr< surface > S, int sense ) {
