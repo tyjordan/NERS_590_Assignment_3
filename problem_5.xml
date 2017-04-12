@@ -7,6 +7,7 @@
 	<uniform    name="isotropic scatter" datatype="double" a="-1.0" b="1.0"/>
 	<delta   	name="pos dist" datatype="point" x = "1.5" y = "1.5" z = "0.0" />
 	<isotropic      name="dir dist" datatype="point"/>
+	<delta name="eng dist" datatype="double" a = "1" />
 </distributions>
 
 <nuclides>
@@ -122,4 +123,5 @@
 <source>
   <position  distribution="pos dist"/>
   <direction distribution="dir dist"/>
+  <energy    energy="eng dist"/>
 </source>
