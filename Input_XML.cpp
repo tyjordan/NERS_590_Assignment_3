@@ -312,7 +312,7 @@ void Input_Problem_Data
 				}
 				else {
 					std::cout << " unknown cross section energy dependence ";
-					std::cout << eng_dep_name << " in nuclide " << name << std::endl;
+					std::cout << eng_dep_name << " called in nuclide " << name << std::endl;
           			throw;
 				}
 			}
@@ -340,13 +340,13 @@ void Input_Problem_Data
 					}
 					else {
           				std::cout << " unknown fission energy distribution ";
-						std::cout << fis_eng_dist_name << " in nuclide " << name << std::endl;
+						std::cout << fis_eng_dist_name << " called in nuclide " << name << std::endl;
           				throw;
         			}
 				}
 				else {
 					std::cout << " unknown cross section energy dependence ";
-					std::cout << eng_dep_name << " in nuclide " << name << std::endl;
+					std::cout << eng_dep_name << " called in nuclide " << name << std::endl;
           			throw;
 				}
 			}
