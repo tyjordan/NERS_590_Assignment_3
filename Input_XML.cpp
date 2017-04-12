@@ -34,10 +34,11 @@ std::shared_ptr< T > findByName( std::vector< std::shared_ptr< T > > vec, std::s
 }
 
 void Input_Problem_Data
-( unsigned long long *NSamples , bool *split_roulette , 
+( unsigned long long *NSamples , bool *continuous_eng , bool *split_roulette , 
   std::vector< std::shared_ptr< distribution<double> > > *double_distributions ,
   std::vector< std::shared_ptr< distribution<int>    > > *int_distributions ,
   std::vector< std::shared_ptr< distribution<point>  > > *point_distributions ,
+  std::vector< std::shared_ptr< caffeine > > *eng_dependences ,
   std::vector< std::shared_ptr<nuclide> > *nuclides ,
   std::vector< std::shared_ptr<material> > *materials ,
   std::vector< std::shared_ptr< surface > > *surfaces ,
@@ -62,6 +63,8 @@ void Input_Problem_Data
 
 //specify number of histories
   *NSamples = input_file.child("nsamples").attribute("n").as_ullong();
+//toggle single-energy vs continuous-energy simulation
+  *continuous_eng = input_file.child("continuous_energy").attribute("t").as_bool();
 //toggle particle splitting and rouletting
   *split_roulette = input_file.child("variance_reduction").attribute("split_and_roulette").as_bool();
 
@@ -244,6 +247,28 @@ void Input_Problem_Data
     }
   }
 
+// Cross section energy dependences
+
+  pugi::xml_node input_energy_dependences = input_file.child("energy_dependences");
+
+  for ( auto d : input_energy_dependences.children() ) {
+	std::string type = d.name();
+
+	if( type == "constant_dependence" ) {
+		eng_dependences->push_back( std::make_shared <constant_dependence> () );
+	}
+	else if( type == "inverse_sqrt_dependence" ) {
+		eng_dependences->push_back( std::make_shared <inverse_sqrt_dependence> () );
+	}
+	else {
+		std::cout << " unknown cross section energy dependence ";
+		std::cout << eng_dep_name << std::end;
+		throw;
+	}
+  }
+
+// Nuclides
+
   // iterate over nuclides
   pugi::xml_node input_nuclides = input_file.child("nuclides");
   for ( auto n : input_nuclides ) {
@@ -259,13 +284,41 @@ void Input_Problem_Data
 
       double xs = r.attribute("xs").as_double();
       if ( rxn_type == "capture" ) {
-        Nuc->addReaction( std::make_shared< capture_reaction > ( xs ) );
+		if( *continuous_eng ) {
+			std::string eng_dep_name = r.attribute("energy_dependence").value();
+			std::shared_ptr <caffeine> ed = findByName( *eng_dependences, eng_dep_name );
+			if( ed ) {
+				Nuc->addReaction( std::make_shared< CE_capture_reaction > ( xs, ed ) );
+			}
+			else {
+				std::cout << " unknown cross section energy dependence ";
+				std::cout << eng_dep_name << " called in nuclide " << name << std::endl;
+          		throw;
+			}
+		}
+		else {
+	    	Nuc->addReaction( std::make_shared< SE_capture_reaction > ( xs ) );
+		}
       }
       else if ( rxn_type == "scatter" ) {
         std::string dist_name = r.attribute("distribution").value();
         std::shared_ptr< distribution<double> > scatterDist = findByName( *double_distributions, dist_name );
         if ( scatterDist ) {
-          Nuc->addReaction( std::make_shared< scatter_reaction > ( xs, scatterDist ) );
+			if( *continuous_eng ) {
+				std::string eng_dep_name = r.attribute("energy_dependence").value();
+				std::shared_ptr <caffeine> ed = findByName( *eng_dependences, eng_dep_name );
+				if( ed ) {
+					Nuc->addReaction( std::make_shared< CE_scatter_reaction > ( xs, ed, scatterDist ) );
+				}
+				else {
+					std::cout << " unknown cross section energy dependence ";
+					std::cout << eng_dep_name << " in nuclide " << name << std::endl;
+          			throw;
+				}
+			}
+			else {
+          		Nuc->addReaction( std::make_shared< SE_scatter_reaction > ( xs, scatterDist ) );
+			}
         }
         else {
           std::cout << " unknown scattering distribution " << dist_name << " in nuclide " << name << std::endl;
@@ -276,7 +329,30 @@ void Input_Problem_Data
         std::string mult_dist_name = r.attribute("multiplicity").value();
         std::shared_ptr< distribution<int> > multDist = findByName( *int_distributions, mult_dist_name );
         if ( multDist ) {
-          Nuc->addReaction( std::make_shared< fission_reaction > ( xs, multDist ) );
+			if( *continuous_eng ) {
+				std::string eng_dep_name = r.attribute("energy_dependence").value();
+				std::shared_ptr <caffeine> ed = findByName( *eng_dependences, eng_dep_name );
+				if ( ed ) {
+					std::string fis_eng_dist_name = r.attribute("fission_energy_distribution").value();
+					std::shared_ptr < distribution<double> > fed = findByName( *double_distributions, fis_eng_dist_name );
+					if ( fed ) {
+						Nuc->addReaction( std::make_shared< CE_fission_reaction > ( xs, ed, multDist, fed ) );
+					}
+					else {
+          				std::cout << " unknown fission energy distribution ";
+						std::cout << fis_eng_dist_name << " in nuclide " << name << std::endl;
+          				throw;
+        			}
+				}
+				else {
+					std::cout << " unknown cross section energy dependence ";
+					std::cout << eng_dep_name << " in nuclide " << name << std::endl;
+          			throw;
+				}
+			}
+			else {
+	        	Nuc->addReaction( std::make_shared< fission_reaction > ( xs, multDist ) );
+			}
         }
         else {
           std::cout << " unknown multiplicity distribution " << mult_dist_name << " in nuclide " << name << std::endl;
