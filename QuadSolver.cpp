@@ -3,6 +3,8 @@
 
 #include "QuadSolver.h"
 
+//A
+
 // return smallest positive real root if it exists; if it does not, return very big number
 double quad_solve( double a, double b, double c ) {
   double d = b*b - 4.0 * a * c;
