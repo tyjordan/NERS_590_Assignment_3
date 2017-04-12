@@ -10,7 +10,7 @@ class cell;
 class particle {
   private:
     point  p_pos, p_dir;
-    double p_wgt, p_eng;
+    double p_wgt, p_eng, p_mass;
     bool   exist;
     std::shared_ptr< cell > p_cell;
   public:
@@ -22,6 +22,7 @@ class particle {
     double wgt() { return p_wgt; };     // return particle weight
     bool alive() { return exist; };     // return particle state flag
     double energy() { return p_eng; };  // return particle energy
+    double mass() { return p_massl };   // return particle mass
 
     ray getRay() { return ray( p_pos, p_dir ); }
 
@@ -34,6 +35,7 @@ class particle {
     void adjustWeight( double f );
     void recordCell( std::shared_ptr< cell > cel );
     void setEnergy( double new_energy );
+    void setMass( double particle_mass);
 };
 
 #endif

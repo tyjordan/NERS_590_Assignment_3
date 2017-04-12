@@ -10,6 +10,7 @@ particle::particle( point p, point d, double e ) : p_pos(p), p_dir(d), p_eng(e) 
   exist = true;
   p_wgt = 1.0;
   p_cell = nullptr;
+  p_mass = 1.67e-27; // mass of neutron in kg (Sets this as default)
 }
 
 // move the particle along its current trajectory
@@ -78,5 +79,9 @@ void particle::recordCell( std::shared_ptr< cell > cel ) {
 // adjust the particle energy
 void particle::setEnergy( double new_energy) {
   p_eng = new_energy;
+}
+
+void particle::setMass( double particle_mass) {
+  p_mass = particle_mass
 }
 

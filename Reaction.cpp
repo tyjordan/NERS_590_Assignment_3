@@ -20,16 +20,10 @@ void  SE_scatter_reaction::sample( particle* p, std::stack< particle >* bank ) {
 }
 
 void  CE_scatter_reaction::sample( particle* p, std::stack< particle >* bank ) {
-  double mn   = 1.67e-27; // mass of neutron in kg
-      // pre collision velocity of neutron in lab frame
-  //  point vlab = std::sqrt(2*p->energy()*1.0e-6*1.6022e-19/mn)*p->dir();
-      // velocity of CoM in lab frame
 
-  double vin = std::sqrt(2.0*p->energy()*1.0e-6*1.6022e-19/mn);
+  double vin = std::sqrt(2.0*p->energy()*1.0e-6*1.6022e-19/p->mass());
 
   point vcm  = vin*(1/(1+A))*p->dir();
-      // velocity of particle in CoM frame
-  //  point Vcom = vlab - vcm;
 
   // sample scattering angle in CoM frame
   double mu0com = scatter_dist->sample();
@@ -39,7 +33,7 @@ void  CE_scatter_reaction::sample( particle* p, std::stack< particle >* bank ) {
   double vouty = vcm.y + vin*(A/(A+1))*p->dir().y;
   double voutz = vcm.z + vin*(A/(A+1))*p->dir().z;
 
-  p->setEnergy(0.5*mn*( voutx*voutx + vouty*vouty + voutz*voutz ));
+  p->setEnergy(0.5*p->mass()*( voutx*voutx + vouty*vouty + voutz*voutz ));
   
 }
 
