@@ -477,15 +477,18 @@ void Input_Problem_Data
   pugi::xml_node input_source = input_file.child("source");
   pugi::xml_node input_source_position  = input_source.child("position");
   pugi::xml_node input_source_direction = input_source.child("direction");
+  pugi::xml_node input_source_energy    = input_source.child("energy");
 
   std::string pos_dist_name = input_source_position.attribute("distribution").value();
   std::string dir_dist_name = input_source_direction.attribute("distribution").value();
+  std::string eng_dist_name = input_source_energy.attribute("energy").value();
 
-  std::shared_ptr< distribution< point > > posDist = findByName( *point_distributions, pos_dist_name );
-  std::shared_ptr< distribution< point > > dirDist = findByName( *point_distributions, dir_dist_name );
+  std::shared_ptr< distribution< point > > posDist = findByName( *point_distributions,  pos_dist_name );
+  std::shared_ptr< distribution< point > > dirDist = findByName( *point_distributions,  dir_dist_name );
+  std::shared_ptr< distribution<double > > engDist = findByName( *double_distributions, eng_dist_name );
   
   if ( posDist && dirDist ) {
-    *src = std::make_shared< source > ( posDist, dirDist );  
+    *src = std::make_shared< source > ( posDist, dirDist, engDist);  
   }
   else {
     if ( ! posDist ) { std::cout << " unknown position distribution "  << pos_dist_name << " in source " << std::endl; }

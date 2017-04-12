@@ -7,6 +7,7 @@
   <delta       name="pos dist"   datatype="point"  x = "1.0e-9" y = "0.0" z = "0.0" />
   <anisotropic name="dir dist"   datatype="point"  u = "1.0" v = "0.0" w = "0.0" distribution="ang source" />
   <uniform     name="isotropic scatter" datatype="double" a="-1.0" b="1.0" />
+  <delta name="eng dist" datatype="double" a = "1" />
 </distributions>
 
 <nuclides>
@@ -49,5 +50,6 @@
 <source>
   <position  distribution="pos dist"/>
   <direction distribution="dir dist"/>
+  <energy    energy="eng dist"/>
 </source>
 

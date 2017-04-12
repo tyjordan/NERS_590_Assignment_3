@@ -124,7 +124,7 @@ int main()
 							int split_num = std::floor( r + Urand() );
 							for(int i = 0; i < split_num; i++)
 							{
-								bank.emplace( p.pos(), p.dir() );
+								bank.emplace( p.pos(), p.dir(), p.energy() );
 								bank.top().adjustWeight( p.wgt() / split_num );
 							}
 							p.kill();
