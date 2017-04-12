@@ -47,12 +47,14 @@ int main()
     double err = 1000.0 * std::numeric_limits < double > ::epsilon();
 
     unsigned long long NSamples;
+    bool continuous_eng;
     bool split_roulette;
 
     // distributuions
     std::vector< std::shared_ptr< distribution<double> > >  double_distributions;
     std::vector< std::shared_ptr< distribution<int>    > >  int_distributions;
     std::vector< std::shared_ptr< distribution<point>  > >  point_distributions;
+	std::vector< std::shared_ptr< caffeine > > eng_dependences;
 
     std::vector< std::shared_ptr<nuclide> > nuclides;
     std::vector< std::shared_ptr<material> > materials;
@@ -63,8 +65,8 @@ int main()
     std::shared_ptr< source > src;
 
 	//Read XML input
-    Input_Problem_Data( &NSamples , &split_roulette , &double_distributions ,
-                        &int_distributions , &point_distributions , &nuclides ,
+    Input_Problem_Data( &NSamples , &continuous_eng , &split_roulette , &double_distributions ,
+                        &int_distributions , &point_distributions , &eng_dependences , &nuclides ,
                         &materials , &surfaces , &cells , &estimators , &src);
 
   

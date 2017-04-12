@@ -17,27 +17,27 @@ void material::addNuclide( std::shared_ptr< nuclide > N, double frac ) {
 // private utility function that returns sum of atomic fraction * microscopic total xs
 // multiply this by atomic density to get macroscopic cross section
 // (this function is useful to accelerate sampling the nuclide)
-double material::micro_xs() {
+double material::micro_xs(double E) {
   double xs = 0.0;
   for ( auto n : nuclides ) { 
     // first is pointer to nuclide, second is atomic fraction
-    xs += n.first->total_xs() * n.second;
+    xs += n.first->total_xs(E) * n.second;
   }
   return xs;
 }
 
 // return the macroscopic cross section
-double material::macro_xs() {
-  return atom_density() * micro_xs();
+double material::macro_xs(double E) {
+  return atom_density() * micro_xs(E);
 }
 
 // randomly sample a nuclide based on total cross sections and atomic fractions
-std::shared_ptr< nuclide > material::sample_nuclide() {
-  double u = micro_xs() * Urand();
+std::shared_ptr< nuclide > material::sample_nuclide(double E) {
+  double u = micro_xs(E) * Urand();
   double s = 0.0;
   for ( auto n : nuclides ) {
     // first is pointer to nuclide, second is atomic fraction
-    s += n.first->total_xs() * n.second;
+    s += n.first->total_xs(E) * n.second;
     if ( s > u ) { return n.first; }
   }
   assert( false ); // should never reach here
@@ -49,10 +49,10 @@ std::shared_ptr< nuclide > material::sample_nuclide() {
 // and the particle bank
 void material::sample_collision( particle* p, std::stack<particle>* bank ) {
   // first sample nuclide
-  std::shared_ptr< nuclide >  N = sample_nuclide();
+  std::shared_ptr< nuclide >  N = sample_nuclide( p->energy() );
 
   // now get the reaction
-  std::shared_ptr< reaction > R = N->sample_reaction();
+  std::shared_ptr< reaction > R = N->sample_reaction( p->energy()  );
 
   // finally process the reaction
   R->sample( p, bank );

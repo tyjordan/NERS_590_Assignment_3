@@ -21,7 +21,7 @@ class reaction {
     ~reaction() {};
 
     virtual std::string name() final { return rxn_name; };
-    virtual double xs() final { return rxn_xs; };
+    virtual double xs(double E) = 0;
     virtual void sample( particle* p, std::stack<particle>* bank ) = 0;
 };
 
