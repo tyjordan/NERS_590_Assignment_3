@@ -1,0 +1,111 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+
+<nsamples n="1000000"/>
+<variance_reduction split_and_roulette="0"/>
+
+<distributions>
+	<uniform    	name="isotropic scatter" datatype="double" a="-1.0" b="1.0"/>
+	<uniform_disk	name="pos dist" datatype="point" axis="x" x0="-1.0" y0="0.0" z0="0.0" r0="0" R="0.5"/>
+	<angular_direction_distribution	name="dir dist" datatype="point"/>
+	<delta 			name="eng dist" datatype="double" a = "1" />
+</distributions>
+
+<nuclides>
+	<nuclide name="nuc1"> 
+    	<capture xs="10.0"/>
+    	<scatter xs="10.0" distribution="isotropic scatter"/>
+	</nuclide>
+	<nuclide name="nucDet">
+		<capture xs="59.0"/>
+    	<scatter xs="1.0" distribution="isotropic scatter"/>
+	</nuclide>
+</nuclides>
+
+<materials>
+	<material name="matSphere" density="0.1">
+    	<nuclide name="nuc1" frac="1.0"/>
+	</material>
+	<material name="matDet" density="0.1">
+    	<nuclide name="nucDet" frac="1.0"/>
+	</material>
+</materials>
+
+<surfaces>
+	<sphere name="sphere boundary" x0="0.0" y0="0.0" z0="0.0" rad="5.0"/>
+	<sphere name="problem boundary" x0="0.0" y0="0.0" z0="0.0" rad="50.0"/>
+	<cylinder name="cylindrical detector wall" axis="x" x0="0.0" y0="0.0" z0="-10.0" rad="0.5"/>
+	<cone   name="cone" axis="x" x0="3.0" y0="0.0" z0="0.0" m="-0.25" /> 
+	<plane name="right detector right" a="1.0" b="0.0" c="0.0" d="25.0"/>
+	<plane name="right detector left" a="1.0" b="0.0" c="0.0" d="20.0"/>
+	<plane name="left detector right" a="1.0" b="0.0" c="0.0" d="-20.0"/>
+	<plane name="left detector left" a="1.0" b="0.0" c="0.0" d="-25.0"/>
+	<plane name="cone right" a="1.0" b="0.0" c="0.0" d="-1.0"/>
+	<plane name="cone left" a="1.0" b="0.0" c="0.0" d="-5.0"/>
+</surfaces>
+
+<cells>
+  <cell name="right detector" material="matDet">
+    <surface name="cylindrical detector wall" sense="-1"/>
+    <surface name="right detector right" sense="-1"/>
+    <surface name="right detector left" sense="+1"/>
+  </cell>
+  <cell name="left detector" material="matDet">
+    <surface name="cylindrical detector wall" sense="-1"/>
+    <surface name="left detector right" sense="-1"/>
+    <surface name="left detector left" sense="+1"/>
+  </cell>
+  <cell name="cent sphere" material="matSphere">
+    <surface name="sphere boundary" sense="-1"/>
+    <surface name="cone" sense="+1"/>
+  </cell>
+  <cell name="extra in sphere" material="matSphere">
+    <surface name="cone right" sense="+1"/>
+    <surface name="cone" sense="-1"/>
+  </cell>
+  <cell name="cone space">
+    <surface name="cone right" sense="-1"/>
+    <surface name="cone left" sense="+1"/>
+    <surface name="cone" sense="-1"/>
+  </cell>
+  <cell name="vacuum 1">
+    <surface name="left detector left" sense="-1"/>
+    <surface name="problem boundary" sense="-1"/>
+  </cell>
+  <cell name="vacuum 2">
+    <surface name="left detector left" sense="+1"/>
+    <surface name="left detector right" sense="-1"/>
+    <surface name="problem boundary" sense="-1"/>
+    <surface name="cylindrical detector wall" sense="+1"/>
+  </cell>
+  <cell name="vacuum 3">
+    <surface name="left detector right" sense="+1"/>
+    <surface name="right detector left" sense="-1"/>
+    <surface name="problem boundary" sense="-1"/>
+    <surface name="sphere boundary" sense="+1"/>
+  </cell>
+  <cell name="vacuum 4">
+    <surface name="right detector left" sense="+1"/>
+    <surface name="right detector right" sense="-1"/>
+    <surface name="problem boundary" sense="-1"/>
+    <surface name="cylindrical detector wall" sense="+1"/>
+  </cell>
+  <cell name="vacuum 1">
+    <surface name="right detector right" sense="+1"/>
+    <surface name="problem boundary" sense="-1"/>
+  </cell>
+  <cell name="graveyard" importance="0.0">
+    <surface name="problem boundary" sense="+1"/>
+  </cell>
+</cells>
+
+<estimators>
+	<cell_pathLengthFlux_estimator name="detector absorption rate" estimator_multiplier="0.295">
+		<cell name="detector" />
+	</cell_pathLengthFlux_estimator>
+</estimators>
+
+<source>
+  <position  distribution="pos dist"/>
+  <direction distribution="dir dist"/>
+  <energy    energy="eng dist"/>
+</source>
