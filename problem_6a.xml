@@ -98,9 +98,12 @@
 </cells>
 
 <estimators>
-	<cell_pathLengthFlux_estimator name="detector absorption rate" estimator_multiplier="0.295">
+	<time_binned_pLF_est name="left detector" estimator_reaction_type="capture">
 		<cell name="detector" />
-	</cell_pathLengthFlux_estimator>
+	</time_binned_pLF_est>
+  <time_binned_pLF_est name="right detector" estimator_reaction_type="capture">
+    <cell name="detector" />
+  </time_binned_pLF_est>
 </estimators>
 
 <source>
