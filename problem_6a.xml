@@ -1,30 +1,37 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 
-<nsamples n="1000000"/>
+<nsamples n="10000000"/>
+<continuous_energy t="1"/>
 <time_tracking t="1"/>
 <variance_reduction split_and_roulette="0"/>
 
 <distributions>
-	<uniform    	name="isotropic scatter" datatype="double" a="-1.0" b="1.0"/>
+	<uniform name="isotropic scatter" datatype="double" a="-1.0" b="1.0"/>
+	<linear name="linear_anisotropic" datatype="double" a="-1" b="1" fa="0.2" fb="0.8"/>
 	<uniform_disk	name="pos dist" datatype="point" axis="x" x0="-1.0" y0="0.0" z0="0.0" r0="0" R="0.5"/>
 	<angulardirection_distribution	name="dir dist" datatype="point"/>
 	<delta 			name="eng dist" datatype="double" a = "1" />
 </distributions>
 
+<energy_dependences>
+	<constant name="sphere scatter xs" a="2.4" />
+	<inverse_sqrt name="sphere capture xs" a="0" b="0.1" />
+	<inverse_sqrt name="detector scatter xs" a="1" b="0.5" />
+</energy_dependences>
+
 <nuclides>
-	<nuclide name="nuc1"> 
-    	<capture xs="10.0"/>
-    	<scatter xs="2.4" distribution="isotropic scatter" A="2.0"/>
+	<nuclide name="nucSph"> 
+    	<capture energy_dependence="sphere capture xs" />
+    	<scatter energy_dependence="sphere scatter xs" distribution="linear_anisotropic" A="2"/>
 	</nuclide>
 	<nuclide name="nucDet">
-		  <capture xs="59.0"/>
-    	<scatter xs="1.0" distribution="isotropic scatter" A="1.0"/>
+    	<scatter energy_dependence="detector scatter xs" distribution="isotropic scatter" A="1"/>
 	</nuclide>
 </nuclides>
 
 <materials>
 	<material name="matSphere" density="0.1">
-    	<nuclide name="nuc1" frac="1.0"/>
+    	<nuclide name="nucSph" frac="1.0"/>
 	</material>
 	<material name="matDet" density="0.1">
     	<nuclide name="nucDet" frac="1.0"/>
