@@ -21,7 +21,7 @@ void  SE_scatter_reaction::sample( particle* p, std::stack< particle >* bank ) {
 
 void  CE_scatter_reaction::sample( particle* p, std::stack< particle >* bank ) {
 
-  double vin = std::sqrt(2.0*p->energy()*1.0e-6*1.6022e-19/p->mass());
+  double vin = std::sqrt(2.0*p->energy()*1.6022e-13/p->mass());
 
   point vcm  = vin*(1/(1+A))*p->dir();
 
