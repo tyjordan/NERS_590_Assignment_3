@@ -48,6 +48,7 @@ int main()
 
     unsigned long long NSamples;
     bool continuous_eng;
+	bool time_tracking;
     bool split_roulette;
 
     // distributuions
@@ -65,7 +66,7 @@ int main()
     std::shared_ptr< source > src;
 
 	//Read XML input
-    Input_Problem_Data( &NSamples , &continuous_eng , &split_roulette , &double_distributions ,
+    Input_Problem_Data( &NSamples , &continuous_eng , &time_tracking , &split_roulette , &double_distributions ,
                         &int_distributions , &point_distributions , &eng_dependences , &nuclides ,
                         &materials , &surfaces , &cells , &estimators , &src);
 

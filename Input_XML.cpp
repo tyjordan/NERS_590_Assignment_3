@@ -34,7 +34,7 @@ std::shared_ptr< T > findByName( std::vector< std::shared_ptr< T > > vec, std::s
 }
 
 void Input_Problem_Data
-( unsigned long long *NSamples , bool *continuous_eng , bool *split_roulette , 
+( unsigned long long *NSamples , bool *continuous_eng , bool *time_tracking , bool *split_roulette , 
   std::vector< std::shared_ptr< distribution<double> > > *double_distributions ,
   std::vector< std::shared_ptr< distribution<int>    > > *int_distributions ,
   std::vector< std::shared_ptr< distribution<point>  > > *point_distributions ,
@@ -65,6 +65,8 @@ void Input_Problem_Data
   *NSamples = input_file.child("nsamples").attribute("n").as_ullong();
 //toggle single-energy vs continuous-energy simulation
   *continuous_eng = input_file.child("continuous_energy").attribute("t").as_bool();
+//toggle particle time tracking for time-binned estimators
+  *time_tracking = input_file.child("time_tracking").attribute("t").as_bool();
 //toggle particle splitting and rouletting
   *split_roulette = input_file.child("variance_reduction").attribute("split_and_roulette").as_bool();
 
@@ -540,9 +542,26 @@ void Input_Problem_Data
         }
       } 
     }
-	else if ( type == "cell_pathLengthFlux_estimator" ) {
+	else if ( type == "pathLengthFlux" ) {
 		std::string rt = e.attribute("estimator_reaction_type").value();
-		Est = std::make_shared< cell_pathLengthFlux_estimator > ( name, rt );
+		bool tb = e.attribute("time_binned").as_bool();
+		if( tb ) {
+			if( *time_tracking ) {
+				double min = e.attribute("min_time_bin").as_double();
+				double max = e.attribute("max_time_bin").as_double();
+				int num = e.attribute("number_of_bins").as_int();
+
+				Est = std::make_shared < time_binned_pLF_est > ( name, rt, min, max, num );
+			}
+			else {
+				std::cout << "Time-binned estimator " << name;
+				std::cout << " called while time tracking is disabled" << std::endl;
+				throw;
+			}
+		}
+		else {
+			Est = std::make_shared< cell_pathLengthFlux_estimator > ( name, rt );
+		}
 
 		// get the cells
 		for( auto c : e.children() ) {
@@ -554,6 +573,7 @@ void Input_Problem_Data
           		}
           		else {
             		std::cout << " unknown cell label " << name << " in estimator " << c.attribute("name").value() << std::endl;
+					throw;
 				}
 			}
 		}
