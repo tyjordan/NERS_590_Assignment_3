@@ -90,7 +90,7 @@ void particle::setMass( double particle_mass) {
 }
 
 void particle::updateTime( double s) {
-  double v = std::sqrt(2.0*p_eng*1.0e-6*1.6022e-19*100.0/p_mass);
+  double v = std::sqrt(2.0*p_eng*1.6022e-13*100.0/p_mass);
   p_time += s/v;
 }
 
