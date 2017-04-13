@@ -219,6 +219,6 @@ class angulardirection_distribution : public distribution<point> {
 	public:
 	angulardirection_distribution(std::string label) : distribution(label){};
 	~angulardirection_distribution () {};
-	double sample(); 
+	point sample(); 
 };
 #endif

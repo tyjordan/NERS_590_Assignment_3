@@ -14,11 +14,11 @@
 <nuclides>
 	<nuclide name="nuc1"> 
     	<capture xs="10.0"/>
-    	<scatter xs="10.0" distribution="isotropic scatter"/>
+    	<scatter xs="2.4" distribution="isotropic scatter" A="2.0"/>
 	</nuclide>
 	<nuclide name="nucDet">
-		<capture xs="59.0"/>
-    	<scatter xs="1.0" distribution="isotropic scatter"/>
+		  <capture xs="59.0"/>
+    	<scatter xs="1.0" distribution="isotropic scatter" A="1.0"/>
 	</nuclide>
 </nuclides>
 
@@ -64,7 +64,7 @@
   </cell>
   <cell name="cone space">
     <surface name="cone right" sense="-1"/>
-    <surface name="sphere boundary" sense="+-1"/>
+    <surface name="sphere boundary" sense="-1"/>
     <surface name="cone" sense="-1"/>
   </cell>
   <cell name="vacuum 1">
