@@ -7,7 +7,7 @@
 <distributions>
 	<uniform    	name="isotropic scatter" datatype="double" a="-1.0" b="1.0"/>
 	<uniform_disk	name="pos dist" datatype="point" axis="x" x0="-1.0" y0="0.0" z0="0.0" r0="0" R="0.5"/>
-	<angular_direction_distribution	name="dir dist" datatype="point"/>
+	<angulardirection_distribution	name="dir dist" datatype="point"/>
 	<delta 			name="eng dist" datatype="double" a = "1" />
 </distributions>
 

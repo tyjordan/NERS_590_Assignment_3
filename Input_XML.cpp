@@ -122,9 +122,6 @@ void Input_Problem_Data
           double a = d.attribute("a").as_double();
           Dist = std::make_shared< HenyeyGreenstein_distribution > ( name, a );
         }
-		else if (type == "angulardirection_distribution"){
-		 Dist = std::make_shared< angulardirection_distribution>( name );
-		}
         else {
           std::cout << "unsupported distribution with data type " << data << std::endl;
           throw;
@@ -230,6 +227,9 @@ void Input_Problem_Data
 			double R =  d.attribute("R").as_double();
 
 			Dist = std::make_shared< uniform_disk_dist > ( name, axis, point( x0, y0, z0 ), r0, R );
+		}
+		else if (type == "angulardirection_distribution"){
+		 Dist = std::make_shared< angulardirection_distribution>( name );
 		}
         else {
           std::cout << "unsupported " << data << " distribution of type " << type << std::endl;
