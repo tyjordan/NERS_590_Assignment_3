@@ -36,7 +36,7 @@ class cell {
 
     void addSurface( std::shared_ptr< surface > S, int sense );
 
-    void attachEstimator( std::shared_ptr< estimator > E ) { cell_estimators.push_back( E ); };
+    void attachEstimator( std::shared_ptr< estimator > E );
 
 	virtual void scoreEstimators( particle* p, double d ) final {
       for ( auto e : cell_estimators ) { e->score( p, d ); }

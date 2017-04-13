@@ -94,7 +94,7 @@ int main()
                 double distToBound  = rayIntersect.second;
 
                 // find distance to collision
-                double distToCollision = -std::log( Urand() )/(currentCell->macro_xs());
+                double distToCollision = -std::log( Urand() )/( currentCell->macro_xs( p.energy() ) );
                 double transDist = std::fmin( distToCollision , distToBound );
                 // move particle to new location
                 currentCell->moveParticle( &p , transDist );

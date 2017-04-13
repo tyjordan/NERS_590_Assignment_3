@@ -263,8 +263,8 @@ void Input_Problem_Data
 		eng_dependences->push_back( std::make_shared <inverse_sqrt_dependence> () );
 	}
 	else {
-		std::cout << " unknown cross section energy dependence ";
-		std::cout << eng_dep_name << std::end;
+		std::cout << " unknown cross section energy dependence type";
+		std::cout << type << std::endl;
 		throw;
 	}
   }
@@ -290,7 +290,7 @@ void Input_Problem_Data
 			std::string eng_dep_name = r.attribute("energy_dependence").value();
 			std::shared_ptr <caffeine> ed = findByName( *eng_dependences, eng_dep_name );
 			if( ed ) {
-				Nuc->addReaction( std::make_shared< CE_capture_reaction > ( xs, ed ) );
+				Rxn = std::make_shared< CE_capture_reaction > ( xs, ed );
 			}
 			else {
 				std::cout << " unknown cross section energy dependence ";
@@ -299,7 +299,7 @@ void Input_Problem_Data
 			}
 		}
 		else {
-	    	Nuc->addReaction( std::make_shared< SE_capture_reaction > ( xs ) );
+	    	Rxn = std::make_shared< SE_capture_reaction > ( xs );
 		}
       }
       else if ( rxn_type == "scatter" ) {
@@ -307,10 +307,11 @@ void Input_Problem_Data
         std::shared_ptr< distribution<double> > scatterDist = findByName( *double_distributions, dist_name );
         if ( scatterDist ) {
 			if( *continuous_eng ) {
+				double a = r.attribute("A").as_double();
 				std::string eng_dep_name = r.attribute("energy_dependence").value();
 				std::shared_ptr <caffeine> ed = findByName( *eng_dependences, eng_dep_name );
 				if( ed ) {
-					Nuc->addReaction( std::make_shared< CE_scatter_reaction > ( xs, ed, scatterDist ) );
+					Rxn = std::make_shared< CE_scatter_reaction > ( xs, ed, scatterDist, a);
 				}
 				else {
 					std::cout << " unknown cross section energy dependence ";
@@ -319,7 +320,7 @@ void Input_Problem_Data
 				}
 			}
 			else {
-          		Nuc->addReaction( std::make_shared< SE_scatter_reaction > ( xs, scatterDist ) );
+				Rxn = std::make_shared< SE_scatter_reaction > ( xs, scatterDist );
 			}
         }
         else {
@@ -338,7 +339,7 @@ void Input_Problem_Data
 					std::string fis_eng_dist_name = r.attribute("fission_energy_distribution").value();
 					std::shared_ptr < distribution<double> > fed = findByName( *double_distributions, fis_eng_dist_name );
 					if ( fed ) {
-						Nuc->addReaction( std::make_shared< CE_fission_reaction > ( xs, ed, multDist, fed ) );
+						Rxn = std::make_shared< CE_fission_reaction > ( xs, ed, multDist, fed );
 					}
 					else {
           				std::cout << " unknown fission energy distribution ";
@@ -353,7 +354,7 @@ void Input_Problem_Data
 				}
 			}
 			else {
-	        	Nuc->addReaction( std::make_shared< fission_reaction > ( xs, multDist ) );
+	        	Rxn = std::make_shared< SE_fission_reaction > ( xs, multDist );
 			}
         }
         else {
@@ -365,6 +366,7 @@ void Input_Problem_Data
         std::cout << "unknown reaction type " << rxn_type << std::endl;
         throw;
       }
+	  Nuc->addReaction(Rxn);
     }
   } 
 
@@ -539,7 +541,8 @@ void Input_Problem_Data
       } 
     }
 	else if ( type == "cell_pathLengthFlux_estimator" ) {
-		Est = std::make_shared< cell_pathLengthFlux_estimator > ( name );
+		std::string rt = e.attribute("estimator_reaction_type").value();
+		Est = std::make_shared< cell_pathLengthFlux_estimator > ( name, rt );
 
 		// get the cells
 		for( auto c : e.children() ) {
@@ -559,9 +562,6 @@ void Input_Problem_Data
       std::cout << "unknown estimator type " << name << std::endl;
       throw;
     }
-
-	if(mult != 0) //update estimator multiplier if specified in xml input
-		Est->set_multiplier(mult);
     estimators->push_back( Est );
   }
 

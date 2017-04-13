@@ -5,10 +5,17 @@
 #include "Material.h"
 #include "Particle.h"
 
-void surface_current_estimator::score( particle* p, double null ) { tally_hist += p->wgt() * m; }
+void surface_current_estimator::score( particle* p, double null ) { tally_hist += p->wgt() ; }
+
+double cell_pathLengthFlux_estimator::total_rxn_xs(double E) {
+	double xs = 0.0;
+	for (auto r: rxn_list) { xs += r.first->xs(E) * r.second; }
+	return xs;
+}
 
 void cell_pathLengthFlux_estimator::score( particle* p, double path_length ) {
-  tally_hist += p->wgt() * path_length * m;
+	tally_hist += p->wgt() * path_length * total_rxn_xs( p->energy() );
+	return;
 }
 
 void counting_estimator::score( particle* p, double null ) { count_hist++; }

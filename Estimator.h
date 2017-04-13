@@ -7,6 +7,8 @@
 #include <vector>
 #include <cassert>
 #include <typeinfo>
+#include <utility>
+#include <memory>
 
 #include "Particle.h"
 #include "Material.h"
@@ -16,21 +18,23 @@ class estimator {
   private:
     std::string estimator_name;
   protected:
-	double m;	//estimator multiplier
     unsigned long long nhist;
+	std::string est_type;
   public:
-     estimator( std::string label ) : estimator_name(label) { m = 1; };
+     estimator( std::string label ) : estimator_name(label) {};
     ~estimator() {};
 
     virtual std::string name() final { return estimator_name; };
-
-	virtual double multiplier() final { return m; };
-	virtual void set_multiplier(double M) final { m = M; return; };
+	virtual std::string estimator_type() final { return est_type; };
 
     virtual void score( particle*, double ) = 0;
 
-    virtual void endHistory()       = 0;
-    virtual void report( int T )           = 0;
+    virtual void endHistory() = 0;
+    virtual void report( int T ) = 0;
+
+	virtual std::string reaction_type() { return "null"; };
+	virtual void add_to_list( std::shared_ptr <reaction> R, double N ) { return; };
+
 };
 
 class single_valued_estimator : public estimator {
@@ -67,24 +71,32 @@ class single_valued_estimator : public estimator {
 			std::cout << "		FOM: " << 1 / ( ( var / ( mean * mean ) ) * T ) << std:: endl;
 		}
      };
-
 };
 
 class surface_current_estimator : public single_valued_estimator {
   private:
 
   public:
-     surface_current_estimator( std::string label ) : single_valued_estimator(label) {};
+     surface_current_estimator( std::string label ) : single_valued_estimator(label)
+		{ est_type = "surface_current"; };
     ~surface_current_estimator() {};
 
     void score( particle*, double );
 };
 
 class cell_pathLengthFlux_estimator : public single_valued_estimator {
+  private:
+	std::string rxn_type;
+	std::vector < std::pair < std::shared_ptr <reaction>, double > > rxn_list;
+	double total_rxn_xs(double E);
   public:
-     cell_pathLengthFlux_estimator( std::string label ) : 
-       single_valued_estimator(label) {};
+     cell_pathLengthFlux_estimator( std::string label, std::string rt ) : 
+       single_valued_estimator(label), rxn_type(rt) { est_type = "pathLengthFlux"; };
     ~cell_pathLengthFlux_estimator() {};
+
+	std::string reaction_type() { return rxn_type; };
+	void add_to_list( std::shared_ptr <reaction> R, double N )
+		{ rxn_list.push_back( std::make_pair(R, N) ); return; };
 
     void score( particle*, double );
 };
@@ -94,7 +106,8 @@ class counting_estimator : public estimator {
     int count_hist;
     std::vector< double > tally;
   public:
-     counting_estimator( std::string label ) : estimator(label) { count_hist = 0; };
+     counting_estimator( std::string label ) : estimator(label)
+		{ count_hist = 0; est_type = "counting"; };
     ~counting_estimator() {};
 
     void score( particle*, double);

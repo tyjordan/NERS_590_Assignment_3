@@ -23,7 +23,8 @@ void  CE_scatter_reaction::sample( particle* p, std::stack< particle >* bank ) {
 
   double vin = std::sqrt(2.0*p->energy()*1.6022e-13/p->mass());
 
-  point vcm  = vin*(1/(1+A))*p->dir();
+  double c = vin*(1/(1+A));
+  point vcm ( (c * p->dir().x), (c * p->dir().y), (c * p->dir().z) );
 
   // sample scattering angle in CoM frame
   double mu0com = scatter_dist->sample();
