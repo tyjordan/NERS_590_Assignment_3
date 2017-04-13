@@ -11,6 +11,7 @@
 		<point  x="0" y="-2" z="1" p="0.5"/>
 	</discrete>
 	<isotropic      name="dir dist" datatype="point"/>
+	<delta name="eng dist" datatype="double" a = "1" />
 </distributions>
 
 <nuclides>
@@ -84,4 +85,5 @@
 <source>
   <position  distribution="pos dist"/>
   <direction distribution="dir dist"/>
+  <energy    energy="eng dist"/>
 </source>

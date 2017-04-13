@@ -9,6 +9,7 @@
   <uniform          name="isotropic scatter" datatype="double" a="-1.0" b="1.0" />
   <isotropic        name="dir dist" datatype="point" />
   <meanMultiplicity name="mean multiplicity" datatype="int" nubar="2.8" />
+  <delta name="eng dist" datatype="double" a = "1" />
 </distributions>
 
 <nuclides>
@@ -52,5 +53,6 @@
 <source>
   <position  distribution="pos dist"/>
   <direction distribution="dir dist"/>
+  <energy    energy="eng dist"/>
 </source>
 

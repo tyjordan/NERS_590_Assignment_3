@@ -9,18 +9,20 @@ class cell;
 
 class particle {
   private:
-    point p_pos, p_dir;
-    double p_wgt;
+    point  p_pos, p_dir;
+    double p_wgt, p_eng, p_mass;
     bool   exist;
     std::shared_ptr< cell > p_cell;
   public:
-     particle( point p, point d );
+     particle( point p, point d, double e );
     ~particle() {};
 
-    point pos() { return p_pos; };    // return particle position
-    point dir() { return p_dir; };    // return particle direction 
-    double wgt() { return p_wgt; };   // return particle weight
-    bool alive() { return exist; };   // return particle state flag
+    point pos() { return p_pos; };      // return particle position
+    point dir() { return p_dir; };      // return particle direction 
+    double wgt() { return p_wgt; };     // return particle weight
+    bool alive() { return exist; };     // return particle state flag
+    double energy() { return p_eng; };  // return particle energy
+    double mass() { return p_massl };   // return particle mass
 
     ray getRay() { return ray( p_pos, p_dir ); }
 
@@ -32,6 +34,8 @@ class particle {
     void setDirection( point p );
     void adjustWeight( double f );
     void recordCell( std::shared_ptr< cell > cel );
+    void setEnergy( double new_energy );
+    void setMass( double particle_mass);
 };
 
 #endif

@@ -19,9 +19,9 @@ class nuclide {
     std::vector< std::shared_ptr< reaction > > getReactions() {return rxn;} ;
 
     void        addReaction( std::shared_ptr< reaction > );
-    double      total_xs();
+    double      total_xs(double E);
 
-    std::shared_ptr< reaction > sample_reaction();
+    std::shared_ptr< reaction > sample_reaction(double E);
 };
 
 

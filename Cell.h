@@ -45,8 +45,8 @@ class cell {
     bool testPoint( point p );
     std::pair< std::shared_ptr< surface >, double > surfaceIntersect( ray r );
 
-    double macro_xs() {
-      if ( cell_material ) { return getMaterial()->macro_xs(); }
+    double macro_xs(double E) {
+      if ( cell_material ) { return getMaterial()->macro_xs(E); }
       else { return 0.0; }
     };
 
