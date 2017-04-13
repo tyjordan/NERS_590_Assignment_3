@@ -101,6 +101,24 @@ class cell_pathLengthFlux_estimator : public single_valued_estimator {
     void score( particle*, double );
 };
 
+class time_binned_pLF_est : public estimator {
+	private:
+		std::string rxn_type;
+		std::vector <double> upper_bin_edges;
+		std::vector <cell_pathLengthFlux_estimator> bins;
+	public:
+		time_binned_pLF_est( std::string label, std::string rt, double min, double max, int binnum );
+		~time_binned_pLF_est() {};
+
+		std::string reaction_type() { return rxn_type; };
+		void add_to_list( std::shared_ptr <reaction> R, double N );
+
+		void score( particle*, double );
+
+    	void endHistory();
+    	void report( int T );
+};
+
 class counting_estimator : public estimator {
   private:
     int count_hist;

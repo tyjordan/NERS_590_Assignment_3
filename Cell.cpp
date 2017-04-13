@@ -22,7 +22,7 @@ void cell::addSurface( std::shared_ptr< surface > S, int sense ) {
 
 void cell::attachEstimator( std::shared_ptr <estimator> E) {
 	cell_estimators.push_back( E );
-	if( E->estimator_type() == "pathLengthFlux") {
+	if( ( E->estimator_type() == "pathLengthFlux" ) || ( E->estimator_type() == "time_binned_pLF" )) {
 		std::vector< std::pair< std::shared_ptr< nuclide >, double > > nuc = getMaterial()->getNuclides();
 		for(auto n: nuc) {
 			std::vector< std::shared_ptr< reaction > > rxn = n.first->getReactions();

@@ -3,6 +3,7 @@
 #include <cmath>
 #include <limits>
 #include <memory>
+#include <cassert>
 
 #include "Distribution.h"
 #include "Point.h"
@@ -156,6 +157,7 @@ double angulardirection_distribution::sample() {
 		   return std::pow(6.0*Urand(),1.0/3.0)-1.0 * copysign(1.0,mu);
 		}
 	}
+	assert(false);
  }
 
  
