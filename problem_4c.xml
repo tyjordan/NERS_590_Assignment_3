@@ -73,9 +73,9 @@
 </cells>
 
 <estimators>
-	<cell_pathLengthFlux_estimator name="detector absorption rate" estimator_reaction_type="capture">
+	<pathLengthFlux name="detector absorption rate" estimator_reaction_type="capture">
 		<cell name="detector" />
-	</cell_pathLengthFlux_estimator>
+	</pathLengthFlux>
 </estimators>
 
 <source>
