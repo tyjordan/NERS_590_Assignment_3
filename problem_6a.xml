@@ -40,7 +40,6 @@
 	<plane name="left detector right" a="1.0" b="0.0" c="0.0" d="-20.0"/>
 	<plane name="left detector left" a="1.0" b="0.0" c="0.0" d="-25.0"/>
 	<plane name="cone right" a="1.0" b="0.0" c="0.0" d="-1.0"/>
-	<plane name="cone left" a="1.0" b="0.0" c="0.0" d="-5.0"/>
 </surfaces>
 
 <cells>
@@ -64,7 +63,7 @@
   </cell>
   <cell name="cone space">
     <surface name="cone right" sense="-1"/>
-    <surface name="cone left" sense="+1"/>
+    <surface name="sphere boundary" sense="+-1"/>
     <surface name="cone" sense="-1"/>
   </cell>
   <cell name="vacuum 1">
