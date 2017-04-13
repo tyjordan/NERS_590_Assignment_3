@@ -6,11 +6,9 @@
 
 class caffeine {
 	private:
-		
-	protected:
 		std::string dependence_name;
 	public:
-		caffeine() {};
+		caffeine(std::string label) : dependence_name(label) {};
        ~caffeine() {};
 
     	virtual std::string name() final { return dependence_name; };
@@ -21,24 +19,24 @@ class caffeine {
 
 class constant_dependence : public caffeine {
   private:
-    
+    double a;
   public:
-     constant_dependence()
-     	{ dependence_name = "constant"; };
+     constant_dependence(std::string label, double A) :
+     	caffeine(label), a(A) {};
     ~constant_dependence() {};
 
-     double sample(double E);
+     double sample(double E) { return a; };
 };
 
 class inverse_sqrt_dependence : public caffeine {
   private:
-    
+    double a, b;
   public:
-     inverse_sqrt_dependence()
-     	{ dependence_name = "inverse sqrt"; };
+     inverse_sqrt_dependence(std::string label, double A, double B) :
+     	caffeine(label), a(A), b(B) {};
     ~inverse_sqrt_dependence() {};
 
-     double sample(double E);
+     double sample(double E) { return a + b / std::sqrt(E); };
 };
 
 
