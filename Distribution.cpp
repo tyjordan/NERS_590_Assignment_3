@@ -133,7 +133,7 @@ point uniform_disk_dist::sample() {
 	else
 		return point( std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max() );
 }
-double angulardirection_distribution::sample() {
+point angulardirection_distribution::sample() {
 	
 	// sample polar cosine angle 
 	double u = 2.0*Urand()-1.0 ;
