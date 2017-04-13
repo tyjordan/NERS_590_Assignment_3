@@ -11,6 +11,7 @@ particle::particle( point p, point d, double e ) : p_pos(p), p_dir(d), p_eng(e) 
   p_wgt = 1.0;
   p_cell = nullptr;
   p_mass = 1.67e-27; // mass of neutron in kg (Sets this as default)
+  p_time = 0.0;      // initialize particle time
 }
 
 // move the particle along its current trajectory
@@ -18,6 +19,9 @@ void particle::move( double s ) {
   p_pos.x += s * p_dir.x;
   p_pos.y += s * p_dir.y;
   p_pos.z += s * p_dir.z;
+
+  updateTime( s );
+
 }
 
 // scatter particle given input direction cosine cos_t0 = mu0
@@ -83,5 +87,10 @@ void particle::setEnergy( double new_energy) {
 
 void particle::setMass( double particle_mass) {
   p_mass = particle_mass;
+}
+
+void particle::updateTime( double s) {
+  double v = std::sqrt(2.0*p_energy*1.0e-6*1.6022e-19*100.0/p_mass);
+  p_time += s/v;
 }
 

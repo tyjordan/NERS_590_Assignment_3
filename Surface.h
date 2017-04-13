@@ -111,5 +111,40 @@ class z_cylinder : public surface {
 		double distance( ray r );
 		point reflect( ray r );
 };
+class x_cone : public surface {
+	private:
+		point pos;
+		double rad;
+	public:
+		x_cone( std::string label, point P, double R ) : surface(label), pos(P), rad(R) {};
+		~x_cone() {};
 
+		double eval( point p );
+		double distance( ray r );
+		point reflect( ray r );
+};
+class y_cone : public surface {
+	private:
+		point pos;
+		double rad;
+	public:
+		y_cone( std::string label, point P, double R ) : surface(label), pos(P), rad(R) {};
+		~y_cone() {};
+
+		double eval( point p );
+		double distance( ray r );
+		point reflect( ray r );
+};
+class z_cone : public surface {
+	private:
+		point pos;
+		double rad;
+	public:
+		z_cone( std::string label, point P, double R ) : surface(label), pos(P), rad(R) {};
+		~z_cone() {};
+
+		double eval( point p );
+		double distance( ray r );
+		point reflect( ray r );
+};
 #endif

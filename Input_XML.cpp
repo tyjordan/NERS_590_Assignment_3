@@ -120,6 +120,9 @@ void Input_Problem_Data
           double a = d.attribute("a").as_double();
           Dist = std::make_shared< HenyeyGreenstein_distribution > ( name, a );
         }
+		else if (type == "angulardirection_distribution"){
+		 Dist = std::make_shared< angulardirection_distribution>( name );
+		}
         else {
           std::cout << "unsupported distribution with data type " << data << std::endl;
           throw;
@@ -192,10 +195,9 @@ void Input_Problem_Data
           double w = d.attribute("w").as_double();         
           std::shared_ptr< distribution<double> > angDist = 
             findByName( *double_distributions, d.attribute("distribution").value() );
-      
+			
           // in the angular distribution does not yet, skip to the end of the loop
           if ( ! angDist ) { continue; }
-
           Dist = std::make_shared< anisotropicDirection_distribution > ( name, point( u, v, w ), angDist );
         }
         else if ( type == "independentXYZ" ) {
@@ -423,6 +425,20 @@ void Input_Problem_Data
 			S = std::make_shared< y_cylinder > ( name, point( x0, y0, z0 ), rad );
 		else if ( axis == "z" )
 			S = std::make_shared< z_cylinder > ( name, point( x0, y0, z0 ), rad );
+	}
+	else if ( type == "cone" ) {
+		std::string name = s.attribute("name").value();
+		std::string axis = s.attribute("axis").value();
+		double      x0    = s.attribute("x0").as_double();
+      	double      y0    = s.attribute("y0").as_double();
+      	double      z0    = s.attribute("z0").as_double();
+      	double      rad    = s.attribute("rad").as_double();
+		if ( axis == "x" )
+			S = std::make_shared< x_cone > ( name, point( x0, y0, z0 ), rad );
+		else if ( axis == "y" )
+			S = std::make_shared< y_cone > ( name, point( x0, y0, z0 ), rad );
+		else if ( axis == "z" )
+			S = std::make_shared< z_cone > ( name, point( x0, y0, z0 ), rad );
 	}
     else {
       std::cout << " unkown surface type " << type << std::endl;
