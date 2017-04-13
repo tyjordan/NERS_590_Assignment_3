@@ -1,6 +1,7 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 
 <nsamples n="1000000"/>
+<time_tracking t="1"/>
 <variance_reduction split_and_roulette="0"/>
 
 <distributions>
@@ -98,12 +99,10 @@
 </cells>
 
 <estimators>
-	<time_binned_pLF_est name="left detector" estimator_reaction_type="capture">
-		<cell name="detector" />
-	</time_binned_pLF_est>
-  <time_binned_pLF_est name="right detector" estimator_reaction_type="capture">
-    <cell name="detector" />
-  </time_binned_pLF_est>
+	<pathLengthFlux name="detector scatter rate" estimator_reaction_type="scatter" time_binned="1" min_time_bin="0" max_time_bin="100" number_of_bins="20">
+		<cell name="left detector" />
+		<cell name="right detector" />
+	</pathLengthFlux>
 </estimators>
 
 <source>

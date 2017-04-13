@@ -45,9 +45,9 @@ void time_binned_pLF_est::add_to_list( std::shared_ptr <reaction> R, double N ) 
 
 void time_binned_pLF_est::score( particle* p, double path_length) {
 
-	double start = p->time();
+	double stop = p->time();
 	double v = std::sqrt( 2 * p->energy() * 1.602e-13 / p->mass() ) * 100;
-	double stop = start + (path_length / v);
+	double start = stop - (path_length / v);
 
 	for(int i = 0; i < upper_bin_edges.size(); i++) {
 		if( start < upper_bin_edges.at(i) ) {
