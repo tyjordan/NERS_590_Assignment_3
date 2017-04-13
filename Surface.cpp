@@ -149,3 +149,87 @@ point z_cylinder::reflect( ray r ) {
 
 	return point( ( r.dir.x - fx ), ( r.dir.y - fy ), r.dir.z );
 }
+double x_cone::eval(point p){
+	double dx = p.x - pos.x;
+	double dy = p.y - pos.y;
+	double dz = p.z - pos.z; 
+	return (-(rad * rad)*(dx * dx)) +(dy * dy) + (dz * dz);
+}
+double x_cone::distance( ray r) {
+	double dx = r.pos.x - pos.x; 
+	double dy = r.pos.y - pos.y;
+	double dz = r.pos.z - pos.z;
+	
+	double a = -(rad * rad)*(r.dir.x * r.dir.x) + (r.dir.y * r.dir.y) + (r.dir.z * r.dir.z);
+	double b = 2 * (-(rad * rad)*(r.dir.x * r.dir.x) + (r.dir.y * r.dir.y) + (r.dir.z * r.dir.z));
+	double c = eval(r.pos);
+	
+	return quad_solve(a, b, c);
+}
+point x_cone::reflect(ray r){
+	double dx = r.pos.x - pos.x;
+	double dy = r.pos.y - pos.y; 
+	double dz = r.pos.z - pos.z; 
+	
+	double fx = (2 * (dx*r.dir.x + dy*r.dir.y - std::pow(rad,2.0)*dz*r.dir.z))/((rad * rad)*(1 + rad * rad)*(dz * dz));
+    double fy = (2 * (dx*r.dir.x + dy*r.dir.y - std::pow(rad,2.0)*dz*r.dir.z)* dy)/((rad * rad)*(1 + rad * rad)*(dz * dz));
+    double fz = (2 * (dx*r.dir.x + dy*r.dir.y - std::pow(rad,2.0)*dz*r.dir.z)* dz)/((rad * rad)*(1 + rad * rad)*(dz * dz));
+	
+	return point(r.dir.x - fx,r.dir.y - fy, r.dir.z - fz);
+}
+double y_cone::eval(point p){
+	double dx = p.x - pos.x;
+	double dy = p.y - pos.y;
+	double dz = p.z - pos.z; 
+	return (dx * dx) - ((rad * rad)*(dy * dy)) + (dz * dz);
+}
+double y_cone::distance( ray r) {
+	double dx = r.pos.x - pos.x; 
+	double dy = r.pos.y - pos.y;
+	double dz = r.pos.z - pos.z;
+	
+	double a = -(rad * rad)*(r.dir.x * r.dir.x) + (r.dir.y * r.dir.y) + (r.dir.z * r.dir.z);
+	double b = 2 * ((r.dir.x * r.dir.x) - ((rad * rad)*(r.dir.y * r.dir.y)) + (r.dir.z * r.dir.z));
+	double c = eval(r.pos);
+	
+	return quad_solve(a, b, c);
+}
+point y_cone::reflect(ray r){
+	double dx = r.pos.x - pos.x;
+	double dy = r.pos.y - pos.y; 
+	double dz = r.pos.z - pos.z; 
+	
+	double fx = (2 * (dx*r.dir.x + dy*r.dir.y - std::pow(rad,2.0)*dz*r.dir.z)*dx )/((rad * rad)*(1 + rad * rad)*(dz * dz));
+    double fy = (2 * (dx*r.dir.x + dy*r.dir.y - std::pow(rad,2.0)*dz*r.dir.z))/((rad * rad)*(1 + rad * rad)*(dz * dz));
+    double fz = (2 * (dx*r.dir.x + dy*r.dir.y - std::pow(rad,2.0)*dz*r.dir.z)* dz)/((rad * rad)*(1 + rad * rad)*(dz * dz));
+	
+	return point(r.dir.x - fx,r.dir.y - fy, r.dir.z - fz);
+}
+double z_cone::eval(point p){
+	double dx = p.x - pos.x;
+	double dy = p.y - pos.y;
+	double dz = p.z - pos.z; 
+	return (dx * dx)+(dy * dy) -((rad * rad)*(dz * dz));
+}
+double z_cone::distance( ray r) {
+	double dx = r.pos.x - pos.x; 
+	double dy = r.pos.y - pos.y;
+	double dz = r.pos.z - pos.z;
+	
+	double a = (r.dir.x * r.dir.x) + (r.dir.y * r.dir.y) - ((rad * rad)*(r.dir.z * r.dir.z));
+	double b = 2 * ((r.dir.x * r.dir.x) + (r.dir.y * r.dir.y) - ((rad * rad)*(r.dir.z * r.dir.z)));
+	double c = eval(r.pos);
+	
+	return quad_solve(a, b, c);
+}
+point z_cone::reflect(ray r){
+	double dx = r.pos.x - pos.x;
+	double dy = r.pos.y - pos.y; 
+	double dz = r.pos.z - pos.z; 
+	
+	double fx = (2 * (dx*r.dir.x + dy*r.dir.y - std::pow(rad,2.0)*dz*r.dir.z)*dx )/((rad * rad)*(1 + rad * rad)*(dz * dz));
+    double fy = (2 * (dx*r.dir.x + dy*r.dir.y - std::pow(rad,2.0)*dz*r.dir.z)*dy)/((rad * rad)*(1 + rad * rad)*(dz * dz));
+    double fz = (2 * (dx*r.dir.x + dy*r.dir.y - std::pow(rad,2.0)*dz*r.dir.z))/((rad * rad)*(1 + rad * rad)*(dz * dz));
+	
+	return point(r.dir.x - fx,r.dir.y - fy, r.dir.z - fz);
+}

@@ -132,3 +132,30 @@ point uniform_disk_dist::sample() {
 	else
 		return point( std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max() );
 }
+double angulardirection_distribution::sample() {
+	
+	// sample polar cosine angle 
+	double u = 2.0*Urand()-1.0 ;
+	//sample from 0 to 1 
+	if (u > 0){
+		 double mu = Urand();
+	     if (Urand() < 0.79){
+		 return mu;
+	 }
+	 else {
+		   return std::pow(6.0*Urand(),1.0/3.0)-1.0 * copysign(1.0,mu);
+	    }
+	}
+	//sample from 0 to -1 
+	 if (u < 0){
+		 double mu = Urand()-1.0;
+		 if (Urand() < 0.29){
+		 return mu;
+		}
+	 else {
+		   return std::pow(6.0*Urand(),1.0/3.0)-1.0 * copysign(1.0,mu);
+		}
+	}
+ }
+
+ 

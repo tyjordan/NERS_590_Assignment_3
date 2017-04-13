@@ -214,4 +214,11 @@ class uniform_disk_dist : public distribution<point> {
 
 		point sample();
 };
+class angulardirection_distribution : public distribution<double> {
+	private:
+	public:
+	angulardirection_distribution(std::string label) : distribution(label){};
+	~angulardirection_distribution () {};
+	double sample(); 
+};
 #endif
