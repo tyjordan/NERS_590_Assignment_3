@@ -20,6 +20,22 @@ void cell::addSurface( std::shared_ptr< surface > S, int sense ) {
   surfaces.push_back( std::make_pair( S, sgn ) );
 }
 
+void cell::attachEstimator( std::shared_ptr <estimator> E) {
+	cell_estimators.push_back( E );
+	if( E->estimator_type() == "pathLengthFlux") {
+		std::vector< std::pair< std::shared_ptr< nuclide >, double > > nuc = getMaterial()->getNuclides();
+		for(auto n: nuc) {
+			std::vector< std::shared_ptr< reaction > > rxn = n.first->getReactions();
+			for(auto r: rxn) {
+				if( ( r->name() == E->reaction_type() ) || ( E->reaction_type() == "total" ) ) {
+					E->add_to_list( r, getMaterial()->atom_density() * n.second );
+				}
+			}
+		}
+	}
+	return;
+}
+
 // test if point p inside the current cell
 bool cell::testPoint( point p ) {
 

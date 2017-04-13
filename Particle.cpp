@@ -82,6 +82,6 @@ void particle::setEnergy( double new_energy) {
 }
 
 void particle::setMass( double particle_mass) {
-  p_mass = particle_mass
+  p_mass = particle_mass;
 }
 

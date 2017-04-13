@@ -22,7 +22,7 @@ class particle {
     double wgt() { return p_wgt; };     // return particle weight
     bool alive() { return exist; };     // return particle state flag
     double energy() { return p_eng; };  // return particle energy
-    double mass() { return p_massl };   // return particle mass
+    double mass() { return p_mass; };   // return particle mass
 
     ray getRay() { return ray( p_pos, p_dir ); }
 
@@ -35,7 +35,7 @@ class particle {
     void adjustWeight( double f );
     void recordCell( std::shared_ptr< cell > cel );
     void setEnergy( double new_energy );
-    void setMass( double particle_mass);
+    void setMass( double particle_mass );
 };
 
 #endif
