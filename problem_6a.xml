@@ -42,7 +42,7 @@
 	<sphere name="sphere boundary" x0="0.0" y0="0.0" z0="0.0" rad="5.0"/>
 	<sphere name="problem boundary" x0="0.0" y0="0.0" z0="0.0" rad="50.0"/>
 	<cylinder name="cylindrical detector wall" axis="x" x0="0.0" y0="0.0" z0="-10.0" rad="0.5"/>
-	<cone   name="cone" axis="x" x0="3.0" y0="0.0" z0="0.0" m="-0.25" /> 
+	<cone   name="cone" axis="x" x0="3.0" y0="0.0" z0="0.0" rad="-0.125" /> 
 	<plane name="right detector right" a="1.0" b="0.0" c="0.0" d="25.0"/>
 	<plane name="right detector left" a="1.0" b="0.0" c="0.0" d="20.0"/>
 	<plane name="left detector right" a="1.0" b="0.0" c="0.0" d="-20.0"/>
@@ -96,7 +96,7 @@
     <surface name="problem boundary" sense="-1"/>
     <surface name="cylindrical detector wall" sense="+1"/>
   </cell>
-  <cell name="vacuum 1">
+  <cell name="vacuum 5">
     <surface name="right detector right" sense="+1"/>
     <surface name="problem boundary" sense="-1"/>
   </cell>
@@ -106,8 +106,10 @@
 </cells>
 
 <estimators>
-	<pathLengthFlux name="detector scatter rate" estimator_reaction_type="scatter" time_binned="1" min_time_bin="0" max_time_bin="100" number_of_bins="20">
+	<pathLengthFlux name="left detector scatter rate" estimator_reaction_type="scatter" time_binned="1" min_time_bin="0" max_time_bin="100" number_of_bins="20">
 		<cell name="left detector" />
+	</pathLengthFlux>
+	<pathLengthFlux name="right detector scatter rate" estimator_reaction_type="scatter" time_binned="1" min_time_bin="0" max_time_bin="100" number_of_bins="20">
 		<cell name="right detector" />
 	</pathLengthFlux>
 </estimators>

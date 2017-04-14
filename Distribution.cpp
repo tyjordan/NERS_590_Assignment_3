@@ -135,27 +135,11 @@ point uniform_disk_dist::sample() {
 }
 point angulardirection_distribution::sample() {
 	
-	// sample polar cosine angle 
-	double u = 2.0*Urand()-1.0 ;
-	//sample from 0 to 1 
-	if (u > 0){
-		 double mu = Urand();
-	     if (Urand() < 0.79){
-		 return mu;
-	 }
-	 else {
-		   return std::pow(6.0*Urand(),1.0/3.0)-1.0 * copysign(1.0,mu);
-	    }
+	if( Urand() < (1 / 3) ) {
+		return 2 * Urand() - 1;
 	}
-	//sample from 0 to -1 
-	 if (u < 0){
-		 double mu = Urand()-1.0;
-		 if (Urand() < 0.29){
-		 return mu;
-		}
-	 else {
-		   return std::pow(6.0*Urand(),1.0/3.0)-1.0 * copysign(1.0,mu);
-		}
+	else {
+		return 2 * std::sqrt( std::sqrt( Urand() ) ) - 1;
 	}
 	assert(false);
  }
