@@ -47,7 +47,7 @@
 	<plane name="right detector left" a="1.0" b="0.0" c="0.0" d="20.0"/>
 	<plane name="left detector right" a="1.0" b="0.0" c="0.0" d="-20.0"/>
 	<plane name="left detector left" a="1.0" b="0.0" c="0.0" d="-25.0"/>
-	<plane name="cone right" a="1.0" b="0.0" c="0.0" d="-1.0"/>
+	<plane name="cone right" a="1.0" b="0.0" c="0.0" d="-0.9999"/>
 </surfaces>
 
 <cells>
