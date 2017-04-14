@@ -161,7 +161,7 @@ double x_cone::distance( ray r) {
 	double dz = r.pos.z - pos.z;
 	
 	double a = -(rad * rad)*(r.dir.x * r.dir.x) + (r.dir.y * r.dir.y) + (r.dir.z * r.dir.z);
-	double b = 2 * ( (rad*rad)*(r.pos.x*r.dir.x - x0*r.dir.x) - (r.pos.y*r.dir.z) - (r.pos.z*r.dir.z) );
+	double b = 2 * ( (rad*rad)*(r.pos.x*r.dir.x - pos.x*r.dir.x) - (r.pos.y*r.dir.z) - (r.pos.z*r.dir.z) );
 	double c = eval(r.pos);
 	
 	return quad_solve(a, b, c);
