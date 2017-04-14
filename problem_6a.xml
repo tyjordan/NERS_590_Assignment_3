@@ -106,8 +106,10 @@
 </cells>
 
 <estimators>
-	<pathLengthFlux name="detector scatter rate" estimator_reaction_type="scatter" time_binned="1" min_time_bin="0" max_time_bin="100" number_of_bins="20">
+	<pathLengthFlux name="left detector scatter rate" estimator_reaction_type="scatter" time_binned="1" min_time_bin="0" max_time_bin="100" number_of_bins="20">
 		<cell name="left detector" />
+	</pathLengthFlux>
+	<pathLengthFlux name="right detector scatter rate" estimator_reaction_type="scatter" time_binned="1" min_time_bin="0" max_time_bin="100" number_of_bins="20">
 		<cell name="right detector" />
 	</pathLengthFlux>
 </estimators>

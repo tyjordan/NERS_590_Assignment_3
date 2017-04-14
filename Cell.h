@@ -6,6 +6,8 @@
 #include <utility>
 #include <memory>
 
+#include <iostream>
+
 #include "Point.h"
 #include "Surface.h"
 #include "Material.h"
@@ -39,6 +41,7 @@ class cell {
     void attachEstimator( std::shared_ptr< estimator > E );
 
 	virtual void scoreEstimators( particle* p, double d ) final {
+	  std::cout << "Scoring estimators!" << std::endl;
       for ( auto e : cell_estimators ) { e->score( p, d ); }
     }
 

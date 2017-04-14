@@ -83,10 +83,16 @@ int main()
         std::stack < particle > bank = src->sample();
 
         while ( ! bank.empty() ) {
+
             particle p = bank.top() ; bank.pop();
+
+			std::cout << "NEW PARTICLE!!" << std::endl;
+
             // find cell particle is in
             FindCurrentCell ( &p , &cells );
             std::shared_ptr < cell > currentCell = p.cellPointer();
+
+			std::cout << "starting cell: " << currentCell->name() << std::endl;
 
             while ( p.alive() ) {
                 // find distance to nearest boundary
@@ -95,9 +101,14 @@ int main()
                 double distToBound  = rayIntersect.second;
 
                 // find distance to collision
+
                 double distToCollision = -std::log( Urand() )/( currentCell->macro_xs( p.energy() ) );
                 double transDist = std::fmin( distToCollision , distToBound );
                 // move particle to new location
+
+				std::cout << "distance to boundary: " << distToBound << std::endl;
+				std::cout << "distance to collision: " << distToCollision << std::endl;
+
                 currentCell->moveParticle( &p , transDist );
 				track_count++;
 				currentCell->scoreEstimators( &p, transDist );
@@ -109,6 +120,8 @@ int main()
                     rayIntersect.first->crossSurface( &p, transDist );
                     FindCurrentCell ( &p , &cells );
                     currentCell = p.cellPointer();
+
+					std::cout << "new cell: " << currentCell->name() << std::endl;
 
 					//Particle splitting and rouletting based on cell importances
 					if( split_roulette ) {
