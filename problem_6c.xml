@@ -1,0 +1,123 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+
+<nsamples n="100000000"/>
+<continuous_energy t="1"/>
+<time_tracking t="1" cutoff="100.0e-9"/>
+<variance_reduction split_and_roulette="0"/>
+
+<distributions>
+	<uniform name="isotropic scatter" datatype="double" a="-1.0" b="1.0"/>
+	<linear name="linear_anisotropic" datatype="double" a="-1" b="1" fa="0.03" fb="0.12"/>
+	<forward_peaked_mu name="source mu" datatype="double"/>
+	<uniform_disk	name="pos dist" datatype="point" axis="x" x0="-1.0000001" y0="0.0" z0="0.0" r0="0" R="0.5"/>
+	<anisotropic	name="dir dist" datatype="point" u="1" v="0" w="0" distribution="source mu"/>
+	<delta 			name="eng dist" datatype="double" a = "1" />
+</distributions>
+
+<energy_dependences>
+	<constant name="sphere scatter xs" a="2.4" />
+	<inverse_sqrt name="sphere capture xs" a="0" b="0.1" />
+	<inverse_sqrt name="detector scatter xs" a="1" b="0.5" />
+</energy_dependences>
+
+<nuclides>
+	<nuclide name="nucSph"> 
+    	<capture energy_dependence="sphere capture xs" />
+    	<scatter energy_dependence="sphere scatter xs" distribution="linear_anisotropic" A="12"/>
+	</nuclide>
+	<nuclide name="nucDet">
+    	<scatter energy_dependence="detector scatter xs" distribution="isotropic scatter" A="1"/>
+	</nuclide>
+</nuclides>
+
+<materials>
+	<material name="matSphere" density="0.1">
+    	<nuclide name="nucSph" frac="1.0"/>
+	</material>
+	<material name="matDet" density="0.1">
+    	<nuclide name="nucDet" frac="1.0"/>
+	</material>
+</materials>
+
+<surfaces>
+	<sphere name="sphere boundary" x0="0.0" y0="0.0" z0="0.0" rad="5.0"/>
+	<sphere name="problem boundary" x0="0.0" y0="0.0" z0="0.0" rad="50.0"/>
+	<cylinder name="cylindrical detector wall" axis="x" x0="0.0" y0="0.0" z0="-10.0" rad="0.5"/>
+	<cone   name="cone" axis="x" x0="3.0" y0="0.0" z0="0.0" m="-.125" /> 
+	<plane name="right detector right" a="1.0" b="0.0" c="0.0" d="25.0"/>
+	<plane name="right detector left" a="1.0" b="0.0" c="0.0" d="20.0"/>
+	<plane name="left detector right" a="1.0" b="0.0" c="0.0" d="-20.0"/>
+	<plane name="left detector left" a="1.0" b="0.0" c="0.0" d="-25.0"/>
+	<plane name="cone right" a="1.0" b="0.0" c="0.0" d="-1.0"/>
+</surfaces>
+
+<cells>
+  <cell name="right detector" material="matDet">
+    <surface name="cylindrical detector wall" sense="-1"/>
+    <surface name="right detector right" sense="-1"/>
+    <surface name="right detector left" sense="+1"/>
+  </cell>
+  <cell name="left detector" material="matDet">
+    <surface name="cylindrical detector wall" sense="-1"/>
+    <surface name="left detector right" sense="-1"/>
+    <surface name="left detector left" sense="+1"/>
+  </cell>
+  <cell name="sphere left" material="matSphere">
+    <surface name="sphere boundary" sense="-1"/>
+    <surface name="cone" sense="+1"/>
+	<surface name="cone right" sense="-1"/>
+  </cell>
+  <cell name="sphere right" material="matSphere">
+	<surface name="sphere boundary" sense="-1"/>
+    <surface name="cone right" sense="+1"/>
+  </cell>
+  <cell name="cone space">
+    <surface name="cone right" sense="-1"/>
+    <surface name="sphere boundary" sense="-1"/>
+    <surface name="cone" sense="-1"/>
+  </cell>
+  <cell name="vacuum 1">
+    <surface name="left detector left" sense="-1"/>
+    <surface name="problem boundary" sense="-1"/>
+  </cell>
+  <cell name="vacuum 2">
+    <surface name="left detector left" sense="+1"/>
+    <surface name="left detector right" sense="-1"/>
+    <surface name="problem boundary" sense="-1"/>
+    <surface name="cylindrical detector wall" sense="+1"/>
+  </cell>
+  <cell name="vacuum 3">
+    <surface name="left detector right" sense="+1"/>
+    <surface name="right detector left" sense="-1"/>
+    <surface name="problem boundary" sense="-1"/>
+    <surface name="sphere boundary" sense="+1"/>
+  </cell>
+  <cell name="vacuum 4">
+    <surface name="right detector left" sense="+1"/>
+    <surface name="right detector right" sense="-1"/>
+    <surface name="problem boundary" sense="-1"/>
+    <surface name="cylindrical detector wall" sense="+1"/>
+  </cell>
+  <cell name="vacuum 5">
+    <surface name="right detector right" sense="+1"/>
+    <surface name="problem boundary" sense="-1"/>
+  </cell>
+  <cell name="graveyard" importance="0.0">
+    <surface name="problem boundary" sense="+1"/>
+  </cell>
+</cells>
+
+<estimators>
+	<pathLengthFlux name="left detector scatter rate" estimator_reaction_type="scatter" time_binned="1" min_time_bin="0" max_time_bin="100e-9" number_of_bins="20">
+		<cell name="left detector" />
+	</pathLengthFlux>
+	<pathLengthFlux name="right detector scatter rate" estimator_reaction_type="scatter" time_binned="1" min_time_bin="0" max_time_bin="100e-9" number_of_bins="20">
+		<cell name="right detector" />
+	</pathLengthFlux>
+</estimators>
+
+<source>
+  <position  distribution="pos dist"/>
+  <direction distribution="dir dist"/>
+  <energy    energy="eng dist"/>
+</source>
