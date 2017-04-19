@@ -165,3 +165,8 @@ double x_cone::distance( ray r ) {
 
 	return quad_solve(a1, b, c1);
 }
+
+
+
+
+

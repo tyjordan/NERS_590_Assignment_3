@@ -42,4 +42,3 @@ class inverse_sqrt_dependence : public caffeine {
 
 #endif
 
-
