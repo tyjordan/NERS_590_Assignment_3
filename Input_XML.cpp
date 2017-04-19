@@ -263,16 +263,12 @@ void Input_Problem_Data
 
   for ( auto d : input_energy_dependences.children() ) {
 	std::string type = d.name();
-	std::string name = d.attribute("name").value();
 
-	if( type == "constant" ) {
-		double A = d.attribute("a").as_double();
-		eng_dependences->push_back( std::make_shared <constant_dependence> (name, A) );
+	if( type == "constant_dependence" ) {
+		eng_dependences->push_back( std::make_shared <constant_dependence> () );
 	}
-	else if( type == "inverse_sqrt" ) {
-		double A = d.attribute("a").as_double();
-		double B = d.attribute("b").as_double();
-		eng_dependences->push_back( std::make_shared <inverse_sqrt_dependence> (name, A, B) );
+	else if( type == "inverse_sqrt_dependence" ) {
+		eng_dependences->push_back( std::make_shared <inverse_sqrt_dependence> () );
 	}
 	else {
 		std::cout << " unknown cross section energy dependence type";
@@ -296,12 +292,13 @@ void Input_Problem_Data
       std::shared_ptr< reaction > Rxn;
       std::string rxn_type = r.name();
 
+      double xs = r.attribute("xs").as_double();
       if ( rxn_type == "capture" ) {
 		if( *continuous_eng ) {
 			std::string eng_dep_name = r.attribute("energy_dependence").value();
 			std::shared_ptr <caffeine> ed = findByName( *eng_dependences, eng_dep_name );
 			if( ed ) {
-				Rxn = std::make_shared< CE_capture_reaction > ( ed );
+				Rxn = std::make_shared< CE_capture_reaction > ( xs, ed );
 			}
 			else {
 				std::cout << " unknown cross section energy dependence ";
@@ -310,7 +307,6 @@ void Input_Problem_Data
 			}
 		}
 		else {
-			double xs = r.attribute("xs").as_double();
 	    	Rxn = std::make_shared< SE_capture_reaction > ( xs );
 		}
       }
@@ -323,7 +319,7 @@ void Input_Problem_Data
 				std::string eng_dep_name = r.attribute("energy_dependence").value();
 				std::shared_ptr <caffeine> ed = findByName( *eng_dependences, eng_dep_name );
 				if( ed ) {
-					Rxn = std::make_shared< CE_scatter_reaction > ( ed, scatterDist, a);
+					Rxn = std::make_shared< CE_scatter_reaction > ( xs, ed, scatterDist, a);
 				}
 				else {
 					std::cout << " unknown cross section energy dependence ";
@@ -332,7 +328,6 @@ void Input_Problem_Data
 				}
 			}
 			else {
-				double xs = r.attribute("xs").as_double();
 				Rxn = std::make_shared< SE_scatter_reaction > ( xs, scatterDist );
 			}
         }
@@ -352,7 +347,7 @@ void Input_Problem_Data
 					std::string fis_eng_dist_name = r.attribute("fission_energy_distribution").value();
 					std::shared_ptr < distribution<double> > fed = findByName( *double_distributions, fis_eng_dist_name );
 					if ( fed ) {
-						Rxn = std::make_shared< CE_fission_reaction > ( ed, multDist, fed );
+						Rxn = std::make_shared< CE_fission_reaction > ( xs, ed, multDist, fed );
 					}
 					else {
           				std::cout << " unknown fission energy distribution ";
@@ -367,7 +362,6 @@ void Input_Problem_Data
 				}
 			}
 			else {
-				double xs = r.attribute("xs").as_double();
 	        	Rxn = std::make_shared< SE_fission_reaction > ( xs, multDist );
 			}
         }

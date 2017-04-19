@@ -89,8 +89,6 @@ int main()
 
             particle p = bank.top() ; bank.pop();
 
-			//std::cout << std::endl << "NEW PARTICLE" << std::endl;
-
             // find cell particle is in
             FindCurrentCell ( &p , &cells );
             std::shared_ptr < cell > currentCell = p.cellPointer();
@@ -129,13 +127,8 @@ int main()
                     currentCell->sampleCollision( &p , &bank );
                 }
 
-			//	if(continuous_eng) {
-			//		if( p.energy() < 1000 * std::numeric_limits<double>::epsilon() ) {
-			//			p.kill();
-			//		}
-			//	}
             } // end while particle alive loop
-;
+
         } // end while bank !empty loop
         for (auto e: estimators) { e->endHistory(); } //resolve estimators and the end of each history
  
