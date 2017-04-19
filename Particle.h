@@ -39,6 +39,7 @@ class particle {
     void setEnergy( double new_energy );
 
     void setMass( double particle_mass );
+	void setTime( double t ) { p_time = t; };
     void updateTime( double s );
 
 };

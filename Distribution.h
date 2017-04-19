@@ -125,6 +125,14 @@ class HenyeyGreenstein_distribution : public distribution<double> {
     double sample();
 };
 
+class forward_peaked_mu_distribution : public distribution<double> {
+	private:
+	public:
+	forward_peaked_mu_distribution(std::string label) : distribution(label){};
+	~forward_peaked_mu_distribution () {};
+	double sample(); 
+};
+
 class meanMultiplicity_distribution : public distribution<int> {
   private:
     double nu;
@@ -214,11 +222,5 @@ class uniform_disk_dist : public distribution<point> {
 
 		point sample();
 };
-class angulardirection_distribution : public distribution<point> {
-	private:
-	public:
-	angulardirection_distribution(std::string label) : distribution(label){};
-	~angulardirection_distribution () {};
-	point sample(); 
-};
+
 #endif

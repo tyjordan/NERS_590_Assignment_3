@@ -34,8 +34,8 @@ std::shared_ptr< T > findByName( std::vector< std::shared_ptr< T > > vec, std::s
 }
 
 void Input_Problem_Data
-( unsigned long long *NSamples , bool *continuous_eng , bool *time_tracking , bool *split_roulette , 
-  std::vector< std::shared_ptr< distribution<double> > > *double_distributions ,
+( unsigned long long *NSamples , bool *continuous_eng , bool *time_tracking , double *time_cutoff , 
+  bool *split_roulette , std::vector< std::shared_ptr< distribution<double> > > *double_distributions ,
   std::vector< std::shared_ptr< distribution<int>    > > *int_distributions ,
   std::vector< std::shared_ptr< distribution<point>  > > *point_distributions ,
   std::vector< std::shared_ptr< caffeine > > *eng_dependences ,
@@ -65,8 +65,14 @@ void Input_Problem_Data
   *NSamples = input_file.child("nsamples").attribute("n").as_ullong();
 //toggle single-energy vs continuous-energy simulation
   *continuous_eng = input_file.child("continuous_energy").attribute("t").as_bool();
-//toggle particle time tracking for time-binned estimators
+//toggle particle time tracking for time-binned estimators, set time cutoff
   *time_tracking = input_file.child("time_tracking").attribute("t").as_bool();
+	if( *time_tracking ) {
+		*time_cutoff = input_file.child("time_tracking").attribute("cutoff").as_double();
+		if( *time_cutoff == 0 ) {
+			*time_cutoff = std::numeric_limits<double>::max();
+		}
+	}
 //toggle particle splitting and rouletting
   *split_roulette = input_file.child("variance_reduction").attribute("split_and_roulette").as_bool();
 
@@ -121,6 +127,9 @@ void Input_Problem_Data
         else if ( type == "henyeyGreenstein" ) {
           double a = d.attribute("a").as_double();
           Dist = std::make_shared< HenyeyGreenstein_distribution > ( name, a );
+        }
+		else if ( type == "forward_peaked_mu" ) {
+          Dist = std::make_shared< forward_peaked_mu_distribution > ( name );
         }
         else {
           std::cout << "unsupported distribution with data type " << data << std::endl;
@@ -227,9 +236,6 @@ void Input_Problem_Data
 			double R =  d.attribute("R").as_double();
 
 			Dist = std::make_shared< uniform_disk_dist > ( name, axis, point( x0, y0, z0 ), r0, R );
-		}
-		else if (type == "angulardirection_distribution"){
-		 Dist = std::make_shared< angulardirection_distribution>( name );
 		}
         else {
           std::cout << "unsupported " << data << " distribution of type " << type << std::endl;
@@ -440,13 +446,8 @@ void Input_Problem_Data
 		double      x0    = s.attribute("x0").as_double();
       	double      y0    = s.attribute("y0").as_double();
       	double      z0    = s.attribute("z0").as_double();
-      	double      rad    = s.attribute("rad").as_double();
-		if ( axis == "x" )
-			S = std::make_shared< x_cone > ( name, point( x0, y0, z0 ), rad );
-		else if ( axis == "y" )
-			S = std::make_shared< y_cone > ( name, point( x0, y0, z0 ), rad );
-		else if ( axis == "z" )
-			S = std::make_shared< z_cone > ( name, point( x0, y0, z0 ), rad );
+      	double      m    = s.attribute("m").as_double();
+		S = std::make_shared< x_cone > ( name, point( x0, y0, z0 ), m );
 	}
     else {
       std::cout << " unkown surface type " << type << std::endl;
@@ -605,12 +606,13 @@ void Input_Problem_Data
   std::shared_ptr< distribution< point > > dirDist = findByName( *point_distributions,  dir_dist_name );
   std::shared_ptr< distribution<double > > engDist = findByName( *double_distributions, eng_dist_name );
   
-  if ( posDist && dirDist ) {
+  if ( posDist && dirDist && engDist ) {
     *src = std::make_shared< source > ( posDist, dirDist, engDist);  
   }
   else {
     if ( ! posDist ) { std::cout << " unknown position distribution "  << pos_dist_name << " in source " << std::endl; }
     if ( ! dirDist ) { std::cout << " unknown direction distribution " << dir_dist_name << " in source " << std::endl; }
+	if ( ! engDist ) { std::cout << " unknown energy distribution " << eng_dist_name << " in source " << std::endl; }
     throw;
   }
   //*/

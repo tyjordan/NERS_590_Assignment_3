@@ -39,6 +39,17 @@ int meanMultiplicity_distribution::sample() {
   return (int) std::floor( nu + Urand() );
 }
 
+double forward_peaked_mu_distribution::sample() {
+	double x,y,f;
+	do{
+	x = 2.0*Urand()-1.0;
+	y = 1.5 * Urand();
+	f = 1.0/6.0*(1.0+ std::pow((x+1.0),3));
+	}
+	while( y > f);
+	return x ;
+ }
+
 TerrellFission_distribution::TerrellFission_distribution( std::string label, double p1, double p2, double p3 ) 
     : distribution(label), nubar(p1), sigma(p2), b(p3) {
   double c  = 0.0;
@@ -133,15 +144,4 @@ point uniform_disk_dist::sample() {
 	else
 		return point( std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max() );
 }
-point angulardirection_distribution::sample() {
-	
-	if( Urand() < (1 / 3) ) {
-		return 2 * Urand() - 1;
-	}
-	else {
-		return 2 * std::sqrt( std::sqrt( Urand() ) ) - 1;
-	}
-	assert(false);
- }
-
  

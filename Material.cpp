@@ -34,6 +34,7 @@ double material::macro_xs(double E) {
 // randomly sample a nuclide based on total cross sections and atomic fractions
 std::shared_ptr< nuclide > material::sample_nuclide(double E) {
   double u = micro_xs(E) * Urand();
+
   double s = 0.0;
   for ( auto n : nuclides ) {
     // first is pointer to nuclide, second is atomic fraction
@@ -53,6 +54,8 @@ void material::sample_collision( particle* p, std::stack<particle>* bank ) {
 
   // now get the reaction
   std::shared_ptr< reaction > R = N->sample_reaction( p->energy()  );
+
+  //std::cout << "REACTION: " << R->name() << std::endl;
 
   // finally process the reaction
   R->sample( p, bank );

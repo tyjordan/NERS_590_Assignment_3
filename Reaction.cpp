@@ -21,21 +21,16 @@ void  SE_scatter_reaction::sample( particle* p, std::stack< particle >* bank ) {
 
 void  CE_scatter_reaction::sample( particle* p, std::stack< particle >* bank ) {
 
-  double vin = std::sqrt(2.0*p->energy()*1.6022e-13/p->mass());
-
-  double c = vin*(1/(1+A));
-  point vcm ( (c * p->dir().x), (c * p->dir().y), (c * p->dir().z) );
-
+  double mu0 = scatter_dist->sample();
+  p->scatter( mu0 );
+  double energy_Cm = p->energy()*std::pow((A/(A+1.0)),2.0);
+  double energy_labframe = energy_Cm + ((2.0*mu0*(A+1.0)*std::sqrt(p->energy()*energy_Cm))+p->energy())/std::pow(A+1.0,2.0);
   // sample scattering angle in CoM frame
-  double mu0com = scatter_dist->sample();
+  double mu0com = mu0*std::sqrt(energy_Cm/energy_labframe)+std::sqrt(p->energy()/energy_labframe)/(A+1);;
   p->scatter( mu0com );
-
-  double voutx = vcm.x + vin*(A/(A+1))*p->dir().x;
-  double vouty = vcm.y + vin*(A/(A+1))*p->dir().y;
-  double voutz = vcm.z + vin*(A/(A+1))*p->dir().z;
-
-  p->setEnergy(0.5*p->mass()*( voutx*voutx + vouty*vouty + voutz*voutz ));
+  p->setEnergy(energy_labframe);
   
+  return;
 }
 
 

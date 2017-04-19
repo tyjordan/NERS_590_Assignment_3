@@ -15,6 +15,7 @@ double cell_pathLengthFlux_estimator::total_rxn_xs(double E) {
 }
 
 void cell_pathLengthFlux_estimator::score( particle* p, double path_length ) {
+
 	tally_hist += p->wgt() * path_length * total_rxn_xs( p->energy() );
 	return;
 }
@@ -32,14 +33,15 @@ time_binned_pLF_est::time_binned_pLF_est( std::string label, std::string rt, dou
 		upper_bin_edges.push_back(t);
 	}
 
+	std::string name;
 	for(int i = 0; i < upper_bin_edges.size(); i++) {
-		cell_pathLengthFlux_estimator b ( std::to_string( upper_bin_edges.at(i) ), rt );
-		bins.push_back(b);
+		bins.push_back(std::make_shared <cell_pathLengthFlux_estimator> ( name, rt ) );
 	}
 }
 
 void time_binned_pLF_est::add_to_list( std::shared_ptr <reaction> R, double N ) {
-	for(auto b: bins) { b.add_to_list(R, N); }
+
+	for(auto b: bins) { b->add_to_list(R, N); }
 	return;
 }
 
@@ -52,17 +54,17 @@ void time_binned_pLF_est::score( particle* p, double path_length) {
 	for(int i = 0; i < upper_bin_edges.size(); i++) {
 		if( start < upper_bin_edges.at(i) ) {
 			if( stop < upper_bin_edges.at(i) ) {
-				bins.at(i).score(p, path_length);
+				bins.at(i)->score(p, path_length);
 			}
 			else {
-				bins.at(i).score( p, v * (upper_bin_edges.at(i) - start) );
+				bins.at(i)->score( p, v * (upper_bin_edges.at(i) - start) );
 				for(int j = (i + 1); j < upper_bin_edges.size(); j++) {
 					if( stop < upper_bin_edges.at(j) ) {
-						bins.at(j).score( p, v * ( stop - upper_bin_edges.at(j - 1) ) );
+						bins.at(j)->score( p, v * ( stop - upper_bin_edges.at(j - 1) ) );
 						break;
 					}
 					else {
-						bins.at(j).score( p, v * ( upper_bin_edges.at(j) - upper_bin_edges.at(j - 1) ) );
+						bins.at(j)->score( p, v * ( upper_bin_edges.at(j) - upper_bin_edges.at(j - 1) ) );
 					}
 				}
 			}
@@ -72,13 +74,18 @@ void time_binned_pLF_est::score( particle* p, double path_length) {
 }
 						
 void time_binned_pLF_est::endHistory() {
-	for(auto b: bins) { b.endHistory(); }
+	for(auto b: bins) { b->endHistory(); }
 	return;
 }
 
 void time_binned_pLF_est::report( int T ) {
 	std::cout << name() << std::endl;
-	for(auto b: bins) { b.report(T); }
+	//for(auto b: bins) { b->report(T); }
+	for(int i = 0; i < bins.size(); i++) {
+		std::cout << upper_bin_edges.at(i);
+		bins.at(i)->report(T);
+	}
+	std::cout << std::endl;
 	return;
 }
 

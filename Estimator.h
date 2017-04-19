@@ -105,7 +105,7 @@ class time_binned_pLF_est : public estimator {
 	private:
 		std::string rxn_type;
 		std::vector <double> upper_bin_edges;
-		std::vector <cell_pathLengthFlux_estimator> bins;
+		std::vector < std::shared_ptr <cell_pathLengthFlux_estimator> > bins;
 	public:
 		time_binned_pLF_est( std::string label, std::string rt, double min, double max, int binnum );
 		~time_binned_pLF_est() {};

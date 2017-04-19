@@ -19,9 +19,7 @@ void particle::move( double s ) {
   p_pos.x += s * p_dir.x;
   p_pos.y += s * p_dir.y;
   p_pos.z += s * p_dir.z;
-
-  updateTime( s );
-
+  return;
 }
 
 // scatter particle given input direction cosine cos_t0 = mu0
@@ -83,6 +81,7 @@ void particle::recordCell( std::shared_ptr< cell > cel ) {
 // adjust the particle energy
 void particle::setEnergy( double new_energy) {
   p_eng = new_energy;
+  
 }
 
 void particle::setMass( double particle_mass) {
@@ -90,7 +89,8 @@ void particle::setMass( double particle_mass) {
 }
 
 void particle::updateTime( double s) {
-  double v = std::sqrt(2.0*p_eng*1.6022e-13*100.0/p_mass);
+  double v = std::sqrt(2.0 * p_eng * 1.6022e-13 / p_mass) * 100.0;
   p_time += s/v;
+
 }
 
